@@ -4,6 +4,8 @@ module Assignable
   included do
     class_attribute :model, :parent_model, :context_method_name
 
+    before_action :assign_parent_collection, if: :has_parent_model?
+    before_action :assign_parent_member, if: :has_parent_model?
     before_action :assign_collection
     before_action :assign_member
   end
@@ -12,12 +14,38 @@ module Assignable
     instance_variable_set "@#{model.model_name.plural}", model_scope
   end
 
+  def assign_parent_collection
+    instance_variable_set "@#{parent_model.model_name.plural}", parent_model_scope
+  end
+
   def model_scope
-    if has_assignable_context?
+    if has_parent_model?
+      parent_model_instance.association(model.model_name.collection)
+    elsif has_assignable_context?
       assignable_context.association(model.model_name.collection).scope
     else
       model.scope_for_association
     end
+  end
+
+  def parent_model_scope
+    if has_assignable_context?
+      assignable_context.association(parent_model.model_name.collection)
+    else
+      parent_model.scope_for_association
+    end
+  end
+
+  def parent_model_instance
+    parent_model_scope.find(params.fetch(parent_model_param_key))
+  end
+
+  def assign_parent_member
+    instance_variable_set "@#{parent_model.model_name.singular}", parent_model_instance
+  end
+
+  def has_parent_model?
+    parent_model.present?
   end
 
   def assign_member
@@ -26,18 +54,22 @@ module Assignable
 
   def model_instance
     if member?
-      model_scope.find(params.fetch(param_key))
+      model_scope.find params.fetch(model_param_key)
     else
       model_scope.build
     end
   end
 
   def member?
-    params.key? param_key
+    params.key? model_param_key
   end
 
-  def param_key
+  def model_param_key
     :id
+  end
+
+  def parent_model_param_key
+    "#{parent_model.model_name.singular}_id".to_sym
   end
 
   def assignable_context
