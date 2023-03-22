@@ -38,16 +38,4 @@ class UsersController < ApplicationController
       section { @user.inspect }
     end
   end
-
-  def new
-    render phlex
-  end
-
-  def index
-    render phlex
-  end
-
-  def show
-    render phlex
-  end
 end

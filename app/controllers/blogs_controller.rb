@@ -12,8 +12,4 @@ class BlogsController < ApplicationController
       a(href: new_blog_post_path(@blog)) { "Create Post" }
     end
   end
-
-  def show
-    render phlex
-  end
 end

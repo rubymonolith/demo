@@ -1,7 +1,4 @@
 class Users::BlogsController < ApplicationController
-  include Assignable
-  include Phlexable
-
   assign :blogs, from: :current_user
 
   class New < ApplicationView
@@ -27,13 +24,5 @@ class Users::BlogsController < ApplicationController
         a(href: new_user_path) { "Create user" }
       end
     end
-  end
-
-  def new
-    render phlex
-  end
-
-  def index
-    render phlex
   end
 end

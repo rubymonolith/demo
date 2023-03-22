@@ -12,8 +12,4 @@ class Blogs::PostsController < ApplicationController
       section { @post.inspect }
     end
   end
-
-  def new
-    render phlex
-  end
 end

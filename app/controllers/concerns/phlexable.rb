@@ -29,4 +29,18 @@ module Phlexable
   def phlex(...)
     assign_phlex_accessors self.class.phlex_action_class(action: action_name).new(...)
   end
+
+  # Try rendering with the regular Rails rendering methods; if those don't work
+  # then try finding the Phlex class that corresponds with the action_name. If that's
+  # found then tell Rails to call `default_phlex_render`.
+  def method_for_action(action_name)
+    super || if self.class.phlex_action_class action: action_name
+               "default_phlex_render"
+             end
+  end
+
+  # Renders a Phlex view for the given action, if it's present.
+  def default_phlex_render
+    render phlex
+  end
 end
