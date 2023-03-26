@@ -1,12 +1,12 @@
 class Users::BlogsController < ApplicationController
-  assign :blogs, from: :current_user
+  resources :blogs, from: :current_user
 
   class New < ApplicationView
-    attr_accessor :current_user, :blogs
+    attr_writer :blog
 
-    def template(&)
-      h1 { "Create a new blog for #{@current_user.name}" }
-      section { @blog.inspect }
+    def template
+      h1 { "Create a new blog" }
+      render BlogsController::Form.new(@blog)
     end
   end
 

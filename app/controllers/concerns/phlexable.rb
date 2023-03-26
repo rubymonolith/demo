@@ -6,7 +6,7 @@ module Phlexable
     # `def index` would find the `Index` constant on the controller class to render
     # for the action `index`.
     def phlex_action_class(action:)
-      action_class = action.camelcase
+      action_class = action.to_s.camelcase
       const_get action_class if const_defined? action_class
     end
   end
@@ -26,8 +26,13 @@ module Phlexable
 
   # Initializers a Phlex view based on the action name, then assigns `view_assigns`
   # to the view.
-  def phlex(...)
-    assign_phlex_accessors self.class.phlex_action_class(action: action_name).new(...)
+  def phlex_action(action)
+    assign_phlex_accessors self.class.phlex_action_class(action: action).new
+  end
+
+  # Phlex action for the current action.
+  def phlex
+    phlex_action(action_name)
   end
 
   # Try rendering with the regular Rails rendering methods; if those don't work

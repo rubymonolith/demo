@@ -1,15 +1,20 @@
 class Blogs::PostsController < ApplicationController
-  include Assignable
-  include Phlexable
+  resources :posts, through: :blogs, from: :current_user
 
-  assign :posts, through: :blogs, from: :current_user
+  class Form < ApplicationForm
+    def template
+      field :title
+      field :content
+      submit
+    end
+  end
 
   class New < ApplicationView
     attr_accessor :current_user, :blog, :post
 
     def template(&)
       h1 { "Create a new post for #{@blog.title}" }
-      section { @post.inspect }
+      render Form.new(@post)
     end
   end
 end

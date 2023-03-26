@@ -71,7 +71,7 @@ group :test do
   gem "webdrivers"
 end
 
-gem "phlex-rails", "~> 0.9.0"
+gem "phlex-rails", path: "~/Projects/phlex-ruby/phlex-rails"
 
 # gem "oxidizer", "~> 0.1.0"
 

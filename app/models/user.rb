@@ -1,4 +1,7 @@
 class User < ApplicationRecord
   has_many :blogs
-  has_many :posts, through: :blogs
+  has_many :posts
+
+  validates :name, presence: true
+  validates :email, presence: true
 end

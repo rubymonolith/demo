@@ -56,7 +56,21 @@ module Assignable
     if member?
       model_scope.find params.fetch(model_param_key)
     else
-      model_scope.build
+      model_scope.build.tap do |post|
+        # # Blog is a reflection of User
+        # # Get the name of the `user` association.
+        # parent_from_association = parent_model_scope.reflection.inverse_of
+
+        # if model.reflect_on_association(parent_from_association.name)
+        #   similar_association = model.association parent_from_association.name
+        #   # Now let's see if that association exists on the current_model ..
+        #   #
+        #   # This isn't setting the foreign key ... errrggggg.
+        #   raise 'hell'
+
+        #   # post.association(association_name).target = parent_model_scope.owner
+        # end
+      end
     end
   end
 

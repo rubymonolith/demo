@@ -1,9 +1,17 @@
 # frozen_string_literal: true
 
 class ApplicationView < ApplicationComponent
-	# The ApplicationView is an abstract class for all your views.
+	attr_writer :resource, :resources
 
-	# By default, it inherits from `ApplicationComponent`, but you
-	# can change that to `Phlex::HTML` if you want to keep views and
-	# components independent.
+	attr_reader :forms
+
+	def initialize(...)
+		@forms = []
+		super(...)
+	end
+
+	def render(view, ...)
+		@forms.push view if view.is_a? ApplicationForm
+		super(view, ...)
+	end
 end
