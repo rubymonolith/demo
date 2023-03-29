@@ -42,6 +42,9 @@ class ApplicationView < ApplicationComponent
 			model = scope.proxy_association.reflection.klass.model_name
 			element = scope.proxy_association.reflection.klass.model_name.element.to_sym
 			[:new, owner, element]
+		elsif scope.respond_to? :model
+			model = scope.model
+			[:new, model.model_name.element.to_sym]
 		else
 			model = scope
 			[:new, scope]

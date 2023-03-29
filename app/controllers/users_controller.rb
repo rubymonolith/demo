@@ -17,10 +17,10 @@ class UsersController < ApplicationController
       section do
         ul do
           @users.each do |user|
-            li { helpers.link_to(user.name, user) }
+            li { show(user, :name) }
           end
         end
-        a(href: new_user_path) { "Create user" }
+        create(@users)
       end
     end
   end
@@ -39,8 +39,8 @@ class UsersController < ApplicationController
         end
       end
       nav do
-        a(href: new_user_blog_path(@user), role: "button") { "Create Blog" }
-        a(href: edit_user_path(@user), role: "secondary") { "Edit User" }
+        create(@user.blogs, role: "button")
+        edit(@user, role: "secondary")
       end
     end
   end

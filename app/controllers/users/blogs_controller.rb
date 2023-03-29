@@ -18,10 +18,10 @@ class Users::BlogsController < ApplicationController
       section do
         ul {
           @blogs.each { |blog|
-            li { helpers.link_to(blog.title, blog) }
+            li { show(blog, :title) }
           }
         }
-        a(href: new_user_path, class: "button") { "Create user" }
+        create(@current_user.blogs, role: "button")
       end
     end
   end
