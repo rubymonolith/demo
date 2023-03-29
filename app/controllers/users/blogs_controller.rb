@@ -21,7 +21,7 @@ class Users::BlogsController < ApplicationController
             li { helpers.link_to(blog.title, blog) }
           }
         }
-        a(href: new_user_path) { "Create user" }
+        a(href: new_user_path, class: "button") { "Create user" }
       end
     end
   end

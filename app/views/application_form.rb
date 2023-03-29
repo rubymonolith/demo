@@ -2,12 +2,18 @@
 
 class ApplicationForm < PhlexForm
   def field(attribute, type: nil)
-    div do
+    fieldset do
       errors = @model.errors[attribute]
-      label { attribute.to_s.capitalize }
-      text_field attribute
+      column = @model.column_for_attribute attribute
+      legend { attribute.to_s.capitalize }
+      case { type: column.type }
+        in type: :text
+          textarea_field field: attribute
+        else
+          input_field field: attribute
+      end
       if errors.any?
-        div(class: "text-red-500") { errors.to_sentence }
+        div(class: "invalid") { errors.to_sentence }
       end
     end
   end

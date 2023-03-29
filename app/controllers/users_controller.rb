@@ -30,9 +30,18 @@ class UsersController < ApplicationController
 
     def template(&)
       h1 { @resource.name }
-      section { @user.inspect }
-      a(href: new_user_blog_path(@user)) { "Create Blog" }
-      a(href: edit_user_path(@user)) { "Edit User" }
+      p { @user.inspect }
+      ul do
+        @user.blogs.each do |blog|
+          li do
+            helpers.link_to blog.title, blog
+          end
+        end
+      end
+      nav do
+        a(href: new_user_blog_path(@user), role: "button") { "Create Blog" }
+        a(href: edit_user_path(@user), role: "secondary") { "Edit User" }
+      end
     end
   end
 

@@ -7,5 +7,7 @@ Rails.application.routes.draw do
     nest :posts
   end
 
+  resources :posts
+
   root to: "users#index"
 end

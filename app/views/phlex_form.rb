@@ -1,4 +1,6 @@
 class PhlexForm < Phlex::HTML
+  DEFAULT_INPUT_TYPE = "text".freeze
+
   attr_reader :fields, :model
 
   def initialize(model)
@@ -33,7 +35,7 @@ class PhlexForm < Phlex::HTML
     )
   end
 
-  def input_field(field:, value: nil, type: "text", **attributes)
+  def input_field(field:, value: nil, type: nil, **attributes)
     @fields << field
     input(
       name: field_name(field),
@@ -41,6 +43,11 @@ class PhlexForm < Phlex::HTML
       value: value || model_value(field),
       **attributes
     )
+  end
+
+  def textarea_field(field:, value: nil, **attributes)
+    @fields << field
+    textarea(name: field_name(field), **attributes) { value || model_value(field) }
   end
 
   def _method_field

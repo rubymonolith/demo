@@ -41,7 +41,16 @@ module Resource
     end
   end
 
+  def destroy
+    @resource.destroy
+    redirect_to destroyed_url
+  end
+
   protected
+
+  def destroyed_url
+    url_for(action: :index)
+  end
 
   def created_url
     @resource

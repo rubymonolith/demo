@@ -6,7 +6,13 @@ class BlogsController < ApplicationController
 
     def template(&)
       h1 { @blog.title }
-      a(href: new_blog_post_path(@blog)) { "Create Post" }
+      p { "Owned and operated by #{@blog.user.name}"}
+      ol do
+        @blog.posts.each do |post|
+          li { helpers.link_to post.title, post }
+        end
+      end
+      create(@blog.posts, role: "button")
     end
   end
 
