@@ -151,4 +151,114 @@ create(@blog.posts) { "Create Blog Post" }
 
 ### Controller helpers
 
-Nested RESTful controllers come with a
+So much time is spent in Rails controllers writing code that loads data from params passed into the controller into ActiveRecord models.
+
+Oxidizer reduces that down to one line:
+
+```ruby
+class Blogs::PostsController < ApplicationController
+  assign :posts, through: :blogs, from: :current_user
+end
+```
+
+From your views you'd have access to `@posts`, `@post`, `@blog`, `@blogs`.
+
+But wait, there's more! If you change `assign` to `resources`, you get that plus `@resource`, `@resources`, `@parent_resource`, and `@parent_resources` assigned so you can implement components against those variables that resemble scaffolding.
+
+```ruby
+class Blogs::PostsController < ApplicationController
+  resources :posts, through: :blogs, from: :current_user
+end
+```
+
+It also defines reasonable default behaviors for creating, updating, and destroying resources.
+
+#### The old way
+
+To accomplish the same thing in your controller, you might have had to do something like this.
+
+```ruby
+module Blogs
+  class PostsController < ApplicationController
+    before_action :set_blog
+    before_action :set_post, only: %i[ show edit update destroy ]
+
+    def index
+      @posts = @blog.posts.all
+    end
+
+    # GET /posts/1 or /posts/1.json
+    def show
+    end
+
+    # GET /posts/new
+    def new
+      @post = @blog.posts.build
+    end
+
+    # GET /posts/1/edit
+    def edit
+    end
+
+    # POST /posts or /posts.json
+    def create
+      @post = Post.new(post_params)
+
+      respond_to do |format|
+        if @post.save
+          format.html { redirect_to post_url(@post), notice: "Post was successfully created." }
+          format.json { render :show, status: :created, location: @post }
+        else
+          format.html { render :new, status: :unprocessable_entity }
+          format.json { render json: @post.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+
+    # PATCH/PUT /posts/1 or /posts/1.json
+    def update
+      respond_to do |format|
+        if @post.update(post_params)
+          format.html { redirect_to post_url(@post), notice: "Post was successfully updated." }
+          format.json { render :show, status: :ok, location: @post }
+        else
+          format.html { render :edit, status: :unprocessable_entity }
+          format.json { render json: @post.errors, status: :unprocessable_entity }
+        end
+      end
+    end
+
+    # DELETE /posts/1 or /posts/1.json
+    def destroy
+      @post.destroy
+
+      respond_to do |format|
+        format.html { redirect_to posts_url, notice: "Post was successfully destroyed." }
+        format.json { head :no_content }
+      end
+    end
+
+    private
+      # Use callbacks to share common setup or constraints between actions.
+      def set_post
+        @post = @blog.posts.find(params[:id])
+      end
+
+      def set_blog
+        @blog = Blog.find(params[:blog_id])
+      end
+
+      # Only allow a list of trusted parameters through.
+      def post_params
+        params.fetch(:post, {}).permit(:title, :content)
+      end
+
+      # This is probably on the ApplicationController
+      def current_user
+        User.find session[:user_id]
+      end
+  end
+end
+```
+
+It's possible to clean this up, which [Boring Rails](https://boringrails.com/tips/rails-scoped-controllers-sharing-code) writes about.
