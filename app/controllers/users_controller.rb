@@ -34,7 +34,7 @@ class UsersController < ApplicationController
       ul do
         @user.blogs.each do |blog|
           li do
-            helpers.link_to blog.title, blog
+            show(blog, :title)
           end
         end
       end

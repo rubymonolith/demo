@@ -37,7 +37,7 @@ class PostsController < ApplicationController
     def template
       hgroup do
         h1 { @post.title }
-        h2 { helpers.link_to @post.blog.title, @post.blog }
+        h2 { show(@post.blog, :title) }
       end
       article { @post.content }
       nav do

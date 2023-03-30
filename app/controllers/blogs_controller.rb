@@ -9,7 +9,7 @@ class BlogsController < ApplicationController
       p { "Owned and operated by #{@blog.user.name}"}
       ol do
         @blog.posts.each do |post|
-          li { show(@post, :title) }
+          li { show(post, :title) }
         end
       end
       create(@blog.posts, role: "button")
