@@ -71,8 +71,9 @@ group :test do
   gem "webdrivers"
 end
 
-gem "phlex-rails", path: "~/Projects/phlex-ruby/phlex-rails"
+gem "phlex-rails"#, path: "~/Projects/phlex-ruby/phlex-rails"
 
-# gem "oxidizer", "~> 0.1.0"
+gem "oxidizer", "~> 0.1.0", github: "rocketshipio/oxidizer"
 
-gem "oxidizer", path: "~/Projects/rocketshipio/oxidizer"
+# gem "oxidizer", path: "~/Projects/rocketshipio/oxidizer"
+gem "dockerfile-rails", ">= 1.2", :group => :development

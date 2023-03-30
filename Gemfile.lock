@@ -1,13 +1,6 @@
-PATH
-  remote: ../../phlex-ruby/phlex-rails
-  specs:
-    phlex-rails (0.8.1)
-      phlex (~> 1.6)
-      rails (>= 6.1, < 8)
-      zeitwerk (~> 2.6)
-
-PATH
-  remote: ../oxidizer
+GIT
+  remote: https://github.com/rocketshipio/oxidizer.git
+  revision: fe600852c4f47a1faf0d392476a71b0ee4fb0042
   specs:
     oxidizer (0.1.0)
       rails (>= 7.0.3)
@@ -100,6 +93,8 @@ GEM
     crass (1.0.6)
     date (3.3.3)
     debug (1.7.1)
+    dockerfile-rails (1.2.5)
+      rails
     erb (4.0.2)
       cgi (>= 0.3.3)
     erubi (1.12.0)
@@ -137,11 +132,19 @@ GEM
     net-smtp (0.3.3)
       net-protocol
     nio4r (2.5.8)
+    nokogiri (1.14.2-aarch64-linux)
+      racc (~> 1.4)
     nokogiri (1.14.2-arm64-darwin)
+      racc (~> 1.4)
+    nokogiri (1.14.2-x86_64-linux)
       racc (~> 1.4)
     phlex (1.6.1)
       concurrent-ruby (~> 1.2)
       erb (>= 4)
+      zeitwerk (~> 2.6)
+    phlex-rails (0.8.1)
+      phlex (~> 1.6)
+      rails (>= 6.1, < 8)
       zeitwerk (~> 2.6)
     public_suffix (5.0.1)
     puma (5.6.5)
@@ -192,7 +195,9 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
+    sqlite3 (1.6.1-aarch64-linux)
     sqlite3 (1.6.1-arm64-darwin)
+    sqlite3 (1.6.1-x86_64-linux)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
     thor (1.2.1)
@@ -221,16 +226,19 @@ GEM
     zeitwerk (2.6.7)
 
 PLATFORMS
+  aarch64-linux
   arm64-darwin-22
+  x86_64-linux
 
 DEPENDENCIES
   bootsnap
   capybara
   debug
+  dockerfile-rails (>= 1.2)
   importmap-rails
   jbuilder
-  oxidizer!
-  phlex-rails!
+  oxidizer (~> 0.1.0)!
+  phlex-rails
   puma (~> 5.0)
   rails (~> 7.0.4, >= 7.0.4.3)
   redis (~> 4.0)
