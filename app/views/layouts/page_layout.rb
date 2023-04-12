@@ -6,7 +6,7 @@ class PageLayout < ApplicationLayout
 
   def template(&)
     super do
-      header do
+      header(class: "container") do
         if @title and @subtitle
           hgroup do
             h1(&@title)
