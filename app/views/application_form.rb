@@ -6,6 +6,7 @@ class ApplicationForm < PhlexForm
       errors = @model.errors[attribute]
       column = @model.column_for_attribute attribute
       legend { attribute.to_s.capitalize }
+      attributes.merge!(aria_invalid: "true") if errors.any?
       case { type: column.type }
         in type: :text
           textarea_field field: attribute, **attributes
@@ -13,7 +14,7 @@ class ApplicationForm < PhlexForm
           input_field field: attribute, **attributes
       end
       if errors.any?
-        div(class: "invalid") { errors.to_sentence }
+        small { "#{attribute.to_s.capitalize} #{errors.to_sentence}" }
       end
     end
   end
