@@ -2194,7 +2194,7 @@ li[role=list] > a::after {
   cursor: progress;
 }
 
-[aria-busy=true]:not(input, select, textarea)::before {
+[aria-busy=true]:not(input, select, textarea, html)::before {
   display: inline-block;
   width: 1em;
   height: 1em;
@@ -2207,7 +2207,7 @@ li[role=list] > a::after {
   animation: spinner 0.75s linear infinite;
   opacity: var(--loading-spinner-opacity);
 }
-[aria-busy=true]:not(input, select, textarea):not(:empty)::before {
+[aria-busy=true]:not(input, select, textarea, html):not(:empty)::before {
   margin-right: calc(var(--spacing) * 0.5);
   margin-left: 0;
   -webkit-margin-start: 0;
@@ -2215,7 +2215,7 @@ li[role=list] > a::after {
   -webkit-margin-end: calc(var(--spacing) * 0.5);
   margin-inline-end: calc(var(--spacing) * 0.5);
 }
-[aria-busy=true]:not(input, select, textarea):empty {
+[aria-busy=true]:not(input, select, textarea, html):empty {
   text-align: center;
 }
 

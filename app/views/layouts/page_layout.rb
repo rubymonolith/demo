@@ -16,7 +16,7 @@ class PageLayout < ApplicationLayout
           h1 { @title }
         end
       end
-      main(&)
+      main(class: "container", &)
     end
   end
 end
