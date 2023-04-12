@@ -4,9 +4,13 @@ class BlogsController < ApplicationController
   class Show < ApplicationView
     attr_writer :blog, :current_user
 
+    def title = @blog.title
+    def subtitle
+      text "Owned and operated by "
+      show(@blog.user, :name)
+    end
+
     def template(&)
-      h1 { @blog.title }
-      p { "Owned and operated by #{@blog.user.name}"}
       ol do
         @blog.posts.each do |post|
           li { show(post, :title) }

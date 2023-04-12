@@ -4,8 +4,10 @@ class Users::BlogsController < ApplicationController
   class New < ApplicationView
     attr_writer :blog
 
+    def title = "Create blog"
+    def subtitle = "You'll be writing awesome stuff in no time"
+
     def template
-      h1 { "Create a new blog" }
       render BlogsController::Form.new(@blog)
     end
   end
@@ -13,8 +15,9 @@ class Users::BlogsController < ApplicationController
   class Index < ApplicationView
     attr_writer :blogs, :current_user
 
+    def title = "#{@current_user.name}'s Blogs"
+
     def template(&)
-      h1 { "#{@current_user.name}'s Blogs" }
       section do
         ul {
           @blogs.each { |blog|

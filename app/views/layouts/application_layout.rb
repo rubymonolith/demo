@@ -1,14 +1,18 @@
 # frozen_string_literal: true
 
-class ApplicationLayout < ApplicationView
+class ApplicationLayout < ApplicationComponent
 	include Phlex::Rails::Layout
 
-	def template(&block)
+	def initialize(title:)
+		@title = title
+	end
+
+	def template(&)
 		doctype
 
 		html do
 			head do
-				title { "You're awesome" }
+				title(&@title)
 				meta name: "viewport", content: "width=device-width,initial-scale=1"
 				csp_meta_tag
 				csrf_meta_tags
@@ -16,9 +20,7 @@ class ApplicationLayout < ApplicationView
 				javascript_importmap_tags
 			end
 
-			body do
-				main(&block)
-			end
+			body(&)
 		end
 	end
 end

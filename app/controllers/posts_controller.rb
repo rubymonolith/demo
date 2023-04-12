@@ -12,8 +12,9 @@ class PostsController < ApplicationController
   class Index < ApplicationView
     attr_writer :posts
 
+    def title = "#{@blog.title} Posts"
+
     def template
-      h1 { "My Posts" }
       table do
         thead do
           th { "Post" }
@@ -34,11 +35,10 @@ class PostsController < ApplicationController
   class Show < ApplicationView
     attr_writer :post
 
+    def title = @post.title
+    def subtitle = show(@post.blog, :title)
+
     def template
-      hgroup do
-        h1 { @post.title }
-        h2 { show(@post.blog, :title) }
-      end
       article { @post.content }
       nav do
         edit(@post, role: "button")
@@ -50,8 +50,10 @@ class PostsController < ApplicationController
   class Edit < ApplicationView
     attr_writer :post
 
+    def title = @post.title
+    def subtitle = show(@post.blog, :title)
+
     def template
-      h1 { @post.title }
       render Form.new(@post)
     end
   end

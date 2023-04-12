@@ -12,15 +12,17 @@ class UsersController < ApplicationController
   class Index < ApplicationView
     attr_writer :users
 
+    def title = "People"
+    def subtitle = "Create users and sign in"
+
     def template(&)
-      h1 { "People" }
       section do
         ul do
           @users.each do |user|
             li { show(user, :name) }
           end
         end
-        create(@users)
+        create(@users, role: "button")
       end
     end
   end
@@ -28,9 +30,10 @@ class UsersController < ApplicationController
   class Show < ApplicationView
     attr_writer :user
 
+    def title = @user.name
+    def subtitle = @user.email
+
     def template(&)
-      h1 { @resource.name }
-      p { @user.inspect }
       ul do
         @user.blogs.each do |blog|
           li do
@@ -40,6 +43,7 @@ class UsersController < ApplicationController
       end
       nav do
         create(@user.blogs, role: "button")
+        link_to("/users/sessions") { "Login" }
         edit(@user, role: "secondary")
       end
     end
@@ -48,8 +52,9 @@ class UsersController < ApplicationController
   class New < ApplicationView
     attr_writer :user
 
+    def title = "Create user"
+
     def template(&)
-      h1 { "Create User" }
       render Form.new(@user)
     end
   end
@@ -57,8 +62,9 @@ class UsersController < ApplicationController
   class Edit < ApplicationView
     attr_writer :user
 
+    def title = "Edit #{@user.name}"
+
     def template(&)
-      h1 { "Edit #{@user.name}" }
       render Form.new(@user)
     end
   end

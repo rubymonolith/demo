@@ -5,8 +5,10 @@ class Blogs::PostsController < ApplicationController
   class New < ApplicationView
     attr_accessor :current_user, :blog, :post
 
+    def title = "Create a new post"
+    def subtitle = show(@blog, :title)
+
     def template(&)
-      h1 { "Create a new post for #{@blog.title}" }
       render PostsController::Form.new(@post)
     end
   end
