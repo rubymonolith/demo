@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   class Form < ApplicationForm
     def template
       field :title
-      field :content
+      field :content, rows: 6
       submit
     end
   end

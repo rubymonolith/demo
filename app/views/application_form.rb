@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
 class ApplicationForm < PhlexForm
-  def field(attribute, type: nil)
+  def field(attribute, type: nil, **attributes)
     fieldset do
       errors = @model.errors[attribute]
       column = @model.column_for_attribute attribute
       legend { attribute.to_s.capitalize }
       case { type: column.type }
         in type: :text
-          textarea_field field: attribute
+          textarea_field field: attribute, **attributes
         else
-          input_field field: attribute
+          input_field field: attribute, **attributes
       end
       if errors.any?
         div(class: "invalid") { errors.to_sentence }
