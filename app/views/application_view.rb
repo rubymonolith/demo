@@ -9,6 +9,12 @@ class ApplicationView < ApplicationComponent
 	def title = nil
 	def subtitle = nil
 
+	def list(collection, &item_template)
+	  render ListComponent.new(items: collection) do |list|
+	    list.item(&item_template)
+	  end
+	end
+
 	def initialize(...)
 		@forms = []
 		super(...)

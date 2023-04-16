@@ -11,10 +11,11 @@ class BlogsController < ApplicationController
     end
 
     def template(&)
-      ol do
-        @blog.posts.each do |post|
-          li { show(post, :title) }
-        end
+      render TableComponent.new(items: @blog.posts) do |table|
+        table.column("Title")         { show(_1, :title) }
+        table.column("Author")        { show(_1.user, :name) }
+        table.column("Status")        { "Not Published" }
+        table.column("Publish Date")  { _1.publish_at&.to_formatted_s(:long) }
       end
       create(@blog.posts, role: "button")
     end

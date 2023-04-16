@@ -2,6 +2,7 @@
 
 class ApplicationComponent < Phlex::HTML
 	include Phlex::Rails::Helpers::Routes
+	include LinkHelpers
 
 	if Rails.env.development?
 		def before_template

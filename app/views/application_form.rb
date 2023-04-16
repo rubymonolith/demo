@@ -5,7 +5,7 @@ class ApplicationForm < PhlexForm
     fieldset do
       errors = @model.errors[attribute]
       column = @model.column_for_attribute attribute
-      legend { attribute.to_s.capitalize }
+      legend { attribute.to_s.humanize }
       attributes.merge!(aria_invalid: "true") if errors.any?
       case { type: column.type }
         in type: :text

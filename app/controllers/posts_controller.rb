@@ -4,29 +4,27 @@ class PostsController < ApplicationController
   class Form < ApplicationForm
     def template
       field :title
+      field :publish_at
       field :content, rows: 6
       submit
     end
   end
 
   class Index < ApplicationView
-    attr_writer :posts
+    attr_writer :posts, :current_user
 
-    def title = "#{@blog.title} Posts"
+    def title = "#{@current_user.name}'s Posts"
 
     def template
-      table do
-        thead do
-          th { "Post" }
-          th { "Blog" }
-        end
-        tbody do
-          @posts.each do |post|
-            tr do
-              th { show(post, :title) }
-              th { show(post.blog, :title) }
-            end
+      render TableComponent.new(items: @posts) do |table|
+        table.column("Title") { show(_1, :title) }
+        table.column do |column|
+          # Titles might not always be text, so we need to handle rendering
+          # Phlex markup within.
+          column.title do
+            link_to(user_blogs_path(@current_user)) { "Blogs" }
           end
+          column.item { show(_1.blog, :title) }
         end
       end
     end
@@ -39,7 +37,24 @@ class PostsController < ApplicationController
     def subtitle = show(@post.blog, :title)
 
     def template
-      article { @post.content }
+      table do
+        tbody do
+          tr do
+            th { "Publish at" }
+            td { @post.publish_at&.to_formatted_s(:long) }
+          end
+          tr do
+            th { "Status" }
+            td { @post.status }
+          end
+          tr do
+            th { "Content" }
+            td do
+              article { @post.content }
+            end
+          end
+        end
+      end
       nav do
         edit(@post, role: "button")
         delete(@post)

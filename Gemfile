@@ -77,3 +77,5 @@ gem "oxidizer", "~> 0.1.0", github: "rocketshipio/oxidizer"
 
 # gem "oxidizer", path: "~/Projects/rocketshipio/oxidizer"
 gem "dockerfile-rails", ">= 1.2", :group => :development
+
+gem "inputomatic", "~> 0.1.1"

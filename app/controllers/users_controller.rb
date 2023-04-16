@@ -34,12 +34,8 @@ class UsersController < ApplicationController
     def subtitle = @user.email
 
     def template(&)
-      ul do
-        @user.blogs.each do |blog|
-          li do
-            show(blog, :title)
-          end
-        end
+      list(@user.blogs) do |blog|
+        show(blog, :title)
       end
       nav do
         create(@user.blogs, role: "button")
