@@ -2,6 +2,8 @@
 
 Demonstrates the use of a Phlex app that maps closely to the database tables of an application.
 
+[Use the demo](https://oxidizer-demo.fly.dev) at [https://oxidizer-demo.fly.dev](https://oxidizer-demo.fly.dev).
+
 ## Embedded Phlex views in controllers
 
 Phlex classes are used to render HTML views. Now Erb, partials, or templates are used. This demonstrates the feasiblity of component-driven application development with Rails.
