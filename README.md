@@ -2,7 +2,9 @@
 
 Demonstrates the use of a Phlex app that maps closely to the database tables of an application.
 
-[Use the demo](https://oxidizer-demo.fly.dev) at [https://oxidizer-demo.fly.dev](https://oxidizer-demo.fly.dev).
+* [Demo](https://oxidizer-demo.fly.dev) - This repo deployed to [Fly.io](https://fly.io/docs/rails/)
+* [Component-driven Development on Rails with Phlex](https://fly.io/ruby-dispatch/component-driven-development-on-rails-with-phlex/) - Article that covers some of the more notable points of this demo repo.
+* [Phlex](https://www.phlex.fun) - Rubygem that generates HTML from Ruby classes.
 
 ## Embedded Phlex views in controllers
 
