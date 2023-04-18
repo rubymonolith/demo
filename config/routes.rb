@@ -1,5 +1,5 @@
 Rails.application.routes.draw do
-  resources :users do
+  resources :users, except: :destroy do
     nest :blogs
     create :session
   end
@@ -12,5 +12,5 @@ Rails.application.routes.draw do
 
   resources :sessions
 
-  root to: "users#index"
+  root to: "blogs#index"
 end

@@ -18,12 +18,10 @@ class Users::BlogsController < ApplicationController
     def title = "#{@current_user.name}'s Blogs"
 
     def template(&)
-      section do
-        ul {
-          @blogs.each { |blog|
-            li { show(blog, :title) }
-          }
-        }
+      list(@blogs) do |blog|
+        show(blog, :title)
+      end
+      nav do
         create(@current_user.blogs, role: "button")
       end
     end

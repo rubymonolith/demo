@@ -17,7 +17,32 @@ class BlogsController < ApplicationController
         table.column("Status")        { "Not Published" }
         table.column("Publish Date")  { _1.publish_at&.to_formatted_s(:long) }
       end
-      create(@blog.posts, role: "button")
+      nav do
+        create(@blog.posts, role: "button")
+        edit(@blog)
+        delete(@blog)
+      end
+    end
+  end
+
+  class Edit < Show
+    def template
+      render Form.new(@blog)
+    end
+  end
+
+  class Index < ApplicationView
+    attr_accessor :blogs, :current_user
+
+    def title = "Blogs"
+    def subtitle = "Looks like #{helpers.pluralize @blogs.count, "blog"} have been created"
+
+    def template
+      render TableComponent.new(items: @blogs) do |table|
+        table.column("Title") { show(_1, :title) }
+        table.column("Owner") { show(_1.user, :name) }
+      end
+      create(@current_user.blogs, role: "button")
     end
   end
 
