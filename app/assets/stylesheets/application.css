@@ -14,37 +14,37 @@
  *= require_self
  */
 
-/* Pink Light scheme (Default) */
+/* Purple Light scheme (Default) */
 /* Can be forced with data-theme="light" */
 [data-theme="light"],
 :root:not([data-theme="dark"]) {
-  --primary: #d81b60;
-  --primary-hover: #c2185b;
-  --primary-focus: rgba(216, 27, 96, 0.125);
+  --primary: #8e24aa;
+  --primary-hover: #7b1fa2;
+  --primary-focus: rgba(142, 36, 170, 0.125);
   --primary-inverse: #FFF;
 }
 
-/* Pink Dark scheme (Auto) */
+/* Purple Dark scheme (Auto) */
 /* Automatically enabled if user has Dark mode enabled */
 @media only screen and (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --primary: #d81b60;
-    --primary-hover: #e91e63;
-    --primary-focus: rgba(216, 27, 96, 0.25);
+    --primary: #8e24aa;
+    --primary-hover: #9c27b0;
+    --primary-focus: rgba(142, 36, 170, 0.25);
     --primary-inverse: #FFF;
   }
 }
 
-/* Pink Dark scheme (Forced) */
+/* Purple Dark scheme (Forced) */
 /* Enabled if forced with data-theme="dark" */
 [data-theme="dark"] {
-  --primary: #d81b60;
-  --primary-hover: #e91e63;
-  --primary-focus: rgba(216, 27, 96, 0.25);
+  --primary: #8e24aa;
+  --primary-hover: #9c27b0;
+  --primary-focus: rgba(142, 36, 170, 0.25);
   --primary-inverse: #FFF;
 }
 
-/* Pink (Common styles) */
+/* Purple (Common styles) */
 :root {
   --form-element-active-border-color: var(--primary);
   --form-element-focus-color: var(--primary-focus);
