@@ -17,6 +17,17 @@ class PageLayout < ApplicationLayout
         end
       end
       main(class: "container", &)
+      footer(class: "container") do
+        small do
+          text "This demo application is erased on every deploy. Read more about it at "
+          link_to("https://fly.io/ruby-dispatch/component-driven-development-on-rails-with-phlex") do
+            "Component Driven Development"
+          end
+          text " or view the "
+          link_to("https://github.com/rocketshipio/oxidizer-demo") { "source code on Github" }
+          text "."
+        end
+      end
     end
   end
 end
