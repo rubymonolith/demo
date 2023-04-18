@@ -5,3 +5,7 @@
 #
 #   movies = Movie.create([{ name: "Star Wars" }, { name: "Lord of the Rings" }])
 #   Character.create(name: "Luke", movie: movies.first)
+
+User.create!(name: "Bob Law", email: "bob.law@example.com").tap do |user|
+  user.blogs.create! title: "Law Blog"
+end

@@ -39,7 +39,6 @@ class UsersController < ApplicationController
       end
       nav do
         create(@user.blogs, role: "button")
-        link_to("/users/sessions") { "Login" }
         edit(@user, role: "secondary")
       end
     end
