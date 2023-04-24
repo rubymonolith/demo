@@ -19,6 +19,7 @@ class BlogsController < ApplicationController
       end
       nav do
         create(@blog.posts, role: "button")
+        show(blog_batch_posts_path(@blog)){ "Select Posts" }
         edit(@blog)
         delete(@blog)
       end
