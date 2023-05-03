@@ -8,13 +8,6 @@ class PhlexForm < Phlex::HTML
     @fields = Set.new
   end
 
-  # Joel does this in a way with slightly less LOC.
-  def self.input_field(method_name, type:)
-    define_method method_name do |field, **attributes|
-      input_field(field: field, type: type, **attributes)
-    end
-  end
-
   def around_template(&)
     form action: url, method: "post" do
       authenticity_token_field
@@ -33,21 +26,6 @@ class PhlexForm < Phlex::HTML
       type: "hidden",
       value: helpers.form_authenticity_token
     )
-  end
-
-  def input_field(field:, value: nil, type: nil, **attributes)
-    @fields << field
-    input(
-      name: field_name(field),
-      type: type,
-      value: value || model_value(field),
-      **attributes
-    )
-  end
-
-  def textarea_field(field:, value: nil, **attributes)
-    @fields << field
-    textarea(name: field_name(field), **attributes) { value || model_value(field) }
   end
 
   def _method_field
@@ -81,41 +59,92 @@ class PhlexForm < Phlex::HTML
     helpers.url_for(action: action)
   end
 
-  def field_name(*field)
-    helpers.field_name(ActiveModel::Naming.param_key(@model.class), *field)
-  end
+  def self.polymorphic_tag(method_name)
+    attributes_method_name = "#{method_name}_attributes"
+    value_method_name = "#{method_name}_value"
 
-  def model_value(field)
-    @model.attributes.fetch(field.to_s)
-  end
+    define_method method_name do |object = nil, **attributes, &content|
+      if object.respond_to? attributes_method_name
+        attributes = object.send(attributes_method_name).merge(attributes)
+      end
 
-  ## Less sure about this stuff...
-  def infer_type(name)
-    return "email" if name == "email"
+      if object.respond_to? value_method_name
+        # TODO: Ideally I could pass just the method or call to_proc on it. Joel said he's going
+        # to add support for this, so see where thats at.
+        content ||= Proc.new { object.method(value_method_name).call }
+      end
 
-    case model_value(name)
-    when Integer
-      "number"
-    when Date, DateTime
-      "date"
-    when Time
-      "time"
-    else
-      "text"
+      super(**attributes, &content)
     end
   end
 
-  input_field :url_field, type: "url"
-  input_field :text_field, type: "text"
-  input_field :date_field, type: "date"
-  input_field :time_field, type: "time"
-  input_field :week_field, type: "week"
-  input_field :month_field, type: "month"
-  input_field :email_field, type: "email"
-  input_field :color_field, type: "color"
-  input_field :hidden_field, type: "hidden"
-  input_field :search_field, type: "search"
-  input_field :password_field, type: "password"
-  input_field :telephone_field, type: "tel"
-  input_field :datetime_local_field, type: "datetime-local"
+  polymorphic_tag :textarea
+  polymorphic_tag :input
+  polymorphic_tag :label
+
+  class Field
+    include ActionView::Helpers::FormTagHelper
+
+    def initialize(model:, attribute:, namespace: nil, type: nil)
+      @model = model
+      @attribute = attribute
+      @namespace ||= infer_namespace(model)
+      @type = type
+    end
+
+    def input_attributes
+      { value: value, id: id, name: name, type: type }
+    end
+
+    def label_attributes
+      { for: id }
+    end
+
+    def label_value
+      @attribute.to_s.titleize
+    end
+
+    def value
+      @model.send @attribute
+    end
+
+    def id
+      field_id @namespace.last, @attribute
+    end
+
+    def name
+      field_name @namespace.last, @attribute
+    end
+
+    def type
+      @type ||= infer_type(value)
+    end
+
+    protected
+
+    def infer_namespace(object)
+      Array(object.model_name.param_key)
+    end
+
+    def infer_type(name)
+      return "email" if name == "email"
+
+      case value
+      when URI
+        "url"
+      when Integer
+        "number"
+      when Date, DateTime
+        "date"
+      when Time
+        "time"
+      else
+        "text"
+      end
+    end
+  end
+
+  def field(attribute)
+    Field.new model: @model, attribute: attribute
+  end
 end

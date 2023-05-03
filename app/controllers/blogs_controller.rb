@@ -48,7 +48,7 @@ class BlogsController < ApplicationController
 
   class Form < ApplicationForm
     def template
-      field :title
+      input_field :title
       submit
     end
   end

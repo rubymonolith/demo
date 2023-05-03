@@ -3,9 +3,10 @@ class PostsController < ApplicationController
 
   class Form < ApplicationForm
     def template
-      field :title
-      field :publish_at
-      field :content, rows: 6
+      input_field :title
+      input_field :publish_at
+      textarea_field :content, rows: 6
+
       submit
     end
   end
