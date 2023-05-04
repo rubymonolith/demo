@@ -81,8 +81,6 @@ class Phlex::Phorm < Phlex::HTML
 
       if object.respond_to? content_method
         source_content = object.send content_method
-        # TODO: Ideally I could pass just the method or call to_proc on it. Joel said he's going
-        # to add support for this, so see where thats at.
         content = case source_content
         when Phlex::HTML
           Proc.new { render source_content }
