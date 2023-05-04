@@ -12,10 +12,6 @@ class Phlex::Phorm::Field
     { value: value, id: id, name: name, type: type }
   end
 
-  def label_attributes
-    { for: id }
-  end
-
   def button_attributes
     { value: value, id: id, name: name }
   end
@@ -30,6 +26,10 @@ class Phlex::Phorm::Field
 
   def label_content
     LabelComponent.new { @attribute.to_s.titleize }
+  end
+
+  def label_attributes
+    { for: id }
   end
 
   def textarea_content
