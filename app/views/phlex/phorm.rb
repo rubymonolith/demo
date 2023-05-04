@@ -92,4 +92,5 @@ class Phlex::Phorm < Phlex::HTML
   polymorphic_tag :textarea
   polymorphic_tag :input
   polymorphic_tag :label
+  polymorphic_tag :button
 end

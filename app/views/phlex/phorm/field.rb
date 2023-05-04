@@ -16,6 +16,10 @@ class Phlex::Phorm::Field
     { for: id }
   end
 
+  def button_attributes
+    { value: value, id: id, name: name }
+  end
+
   def label_value
     @attribute.to_s.titleize
   end

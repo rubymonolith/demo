@@ -15,7 +15,7 @@ class Blogs::Batch::PostsController < ApplicationController
     def subtitle = "Select posts"
 
     def template(&)
-      render ApplicationForm.new(@batch, url: url_for) do |form|
+      render ApplicationForm.new(@batch, action: url_for) do |form|
         render TableComponent.new(items: @batch) do |table|
           table.column do |column|
             column.item do |selection|
@@ -32,10 +32,10 @@ class Blogs::Batch::PostsController < ApplicationController
         nav do
           ul do
             li do
-              form.button_field(:action, value: :delete) { "Delete" }
+              form.button(form.field(:action), value: "delete") { "Delete" }
             end
             li do
-              form.button_field(:action, value: :publish) { "Publish" }
+              form.button(form.field(:action), value: "publish") { "Publish" }
             end
           end
         end
