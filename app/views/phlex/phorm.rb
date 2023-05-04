@@ -70,19 +70,19 @@ class Phlex::Phorm < Phlex::HTML
     @method.to_s.downcase == "get" ? "get" : "post"
   end
 
-  def self.polymorphic_tag(method_name)
-    attributes_method_name = "#{method_name}_attributes"
-    value_method_name = "#{method_name}_value"
+  def self.polymorphic_tag(html_tag)
+    attributes_method = "#{html_tag}_attributes"
+    content_method = "#{html_tag}_content"
 
-    define_method method_name do |object = nil, **attributes, &content|
-      if object.respond_to? attributes_method_name
-        attributes = object.send(attributes_method_name).merge(attributes)
+    define_method html_tag do |object = nil, **attributes, &content|
+      if object.respond_to? attributes_method
+        attributes = object.send(attributes_method).merge(attributes)
       end
 
-      if object.respond_to? value_method_name
+      if object.respond_to? content_method
         # TODO: Ideally I could pass just the method or call to_proc on it. Joel said he's going
         # to add support for this, so see where thats at.
-        content ||= Proc.new { object.method(value_method_name).call }
+        content ||= Proc.new { object.method(content_method).call }
       end
 
       super(**attributes, &content)

@@ -20,8 +20,12 @@ class Phlex::Phorm::Field
     { value: value, id: id, name: name }
   end
 
-  def label_value
+  def label_content
     @attribute.to_s.titleize
+  end
+
+  def textarea_content
+    value
   end
 
   def value
