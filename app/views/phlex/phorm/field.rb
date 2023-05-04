@@ -20,8 +20,16 @@ class Phlex::Phorm::Field
     { value: value, id: id, name: name }
   end
 
+  class LabelComponent < ApplicationComponent
+    def template(&)
+      strong do
+        yield_content(&)
+      end
+    end
+  end
+
   def label_content
-    @attribute.to_s.titleize
+    LabelComponent.new { @attribute.to_s.titleize }
   end
 
   def textarea_content
