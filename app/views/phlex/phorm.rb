@@ -79,11 +79,11 @@ class Phlex::Phorm < Phlex::HTML
         attributes = object.send(attributes_method).merge(attributes)
       end
 
-      content = if object.respond_to? content_method
+      if object.respond_to? content_method
         source_content = object.send content_method
         # TODO: Ideally I could pass just the method or call to_proc on it. Joel said he's going
         # to add support for this, so see where thats at.
-        case source_content
+        content = case source_content
         when Phlex::HTML
           Proc.new { render source_content }
         else
