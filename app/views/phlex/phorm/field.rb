@@ -36,6 +36,10 @@ class Phlex::Phorm::Field
     value
   end
 
+  def textarea_attributes
+    { id: id, name: name }
+  end
+
   def value
     @model.send @attribute
   end
