@@ -8,14 +8,6 @@ class Phlex::Phorm::Field
     @type = type
   end
 
-  def input_attributes
-    { value: value, id: id, name: name, type: type }
-  end
-
-  def button_attributes
-    { value: value, id: id, name: name }
-  end
-
   class LabelComponent < ApplicationComponent
     def template(&)
       strong do
@@ -24,20 +16,26 @@ class Phlex::Phorm::Field
     end
   end
 
-  def label_content
-    LabelComponent.new { @attribute.to_s.titleize }
+  def html_content(tag)
+    case tag
+    when :label
+      LabelComponent.new { @attribute.to_s.titleize }
+    when :textarea
+      value
+    end
   end
 
-  def label_attributes
-    { for: id }
-  end
-
-  def textarea_content
-    value
-  end
-
-  def textarea_attributes
-    { id: id, name: name }
+  def html_attributes(tag)
+    case tag
+    when :label
+      { for: id }
+    when :textarea
+      { id: id, name: name }
+    when :input
+      { id: id, name: name, value: value, type: type }
+    when :button
+      { value: value, id: id, name: name }
+    end
   end
 
   def value

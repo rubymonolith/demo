@@ -1,4 +1,14 @@
 GIT
+  remote: https://github.com/bradgessler/phlex.git
+  revision: 495cfa901a4f87f7f00693ed4e3a77267695e55a
+  branch: polymorphic-tags
+  specs:
+    phlex (1.8.1)
+      concurrent-ruby (~> 1.2)
+      erb (>= 4)
+      zeitwerk (~> 2.6)
+
+GIT
   remote: https://github.com/rocketshipio/oxidizer.git
   revision: fe600852c4f47a1faf0d392476a71b0ee4fb0042
   specs:
@@ -73,13 +83,13 @@ GEM
       i18n (>= 1.6, < 2)
       minitest (>= 5.1)
       tzinfo (~> 2.0)
-    addressable (2.8.1)
+    addressable (2.8.4)
       public_suffix (>= 2.0.2, < 6.0)
     bindex (0.8.1)
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
-    capybara (3.38.0)
+    capybara (3.39.0)
       addressable
       matrix
       mini_mime (>= 0.1.3)
@@ -93,7 +103,9 @@ GEM
     concurrent-ruby (1.2.2)
     crass (1.0.6)
     date (3.3.3)
-    debug (1.7.1)
+    debug (1.7.2)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     dockerfile-rails (1.2.5)
       rails
     erb (4.0.2)
@@ -101,13 +113,16 @@ GEM
     erubi (1.12.0)
     globalid (1.1.0)
       activesupport (>= 5.0)
-    i18n (1.12.0)
+    i18n (1.13.0)
       concurrent-ruby (~> 1.0)
-    importmap-rails (1.1.5)
+    importmap-rails (1.1.6)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
     inputomatic (0.1.1)
       chronic (~> 0.10)
+    io-console (0.6.0)
+    irb (1.6.4)
+      reline (>= 0.3.0)
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
@@ -124,7 +139,7 @@ GEM
     method_source (1.0.0)
     mini_mime (1.1.2)
     minitest (5.18.0)
-    msgpack (1.6.1)
+    msgpack (1.7.0)
     net-imap (0.3.4)
       date
       net-protocol
@@ -141,19 +156,15 @@ GEM
       racc (~> 1.4)
     nokogiri (1.14.3-x86_64-linux)
       racc (~> 1.4)
-    phlex (1.6.1)
-      concurrent-ruby (~> 1.2)
-      erb (>= 4)
-      zeitwerk (~> 2.6)
-    phlex-rails (0.8.1)
-      phlex (~> 1.6)
+    phlex-rails (1.0.0)
+      phlex (~> 1.7)
       rails (>= 6.1, < 8)
       zeitwerk (~> 2.6)
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
     racc (1.6.2)
-    rack (2.2.6.4)
+    rack (2.2.7)
     rack-test (2.1.0)
       rack (>= 1.3)
     rails (7.0.4.3)
@@ -184,10 +195,12 @@ GEM
       zeitwerk (~> 2.5)
     rake (13.0.6)
     redis (4.8.1)
-    regexp_parser (2.7.0)
+    regexp_parser (2.8.0)
+    reline (0.3.3)
+      io-console (~> 0.5)
     rexml (3.2.5)
     rubyzip (2.3.2)
-    selenium-webdriver (4.8.1)
+    selenium-webdriver (4.9.0)
       rexml (~> 3.2, >= 3.2.5)
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
@@ -198,9 +211,9 @@ GEM
       actionpack (>= 5.2)
       activesupport (>= 5.2)
       sprockets (>= 3.0.0)
-    sqlite3 (1.6.1-aarch64-linux)
-    sqlite3 (1.6.1-arm64-darwin)
-    sqlite3 (1.6.1-x86_64-linux)
+    sqlite3 (1.6.2-aarch64-linux)
+    sqlite3 (1.6.2-arm64-darwin)
+    sqlite3 (1.6.2-x86_64-linux)
     stimulus-rails (1.2.1)
       railties (>= 6.0.0)
     thor (1.2.1)
@@ -226,7 +239,7 @@ GEM
     websocket-extensions (0.1.5)
     xpath (3.2.0)
       nokogiri (~> 1.8)
-    zeitwerk (2.6.7)
+    zeitwerk (2.6.8)
 
 PLATFORMS
   aarch64-linux
@@ -242,6 +255,7 @@ DEPENDENCIES
   inputomatic (~> 0.1.1)
   jbuilder
   oxidizer (~> 0.1.0)!
+  phlex!
   phlex-rails
   puma (~> 5.0)
   rails (~> 7.0.4, >= 7.0.4.3)

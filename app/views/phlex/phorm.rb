@@ -69,32 +69,4 @@ class Phlex::Phorm < Phlex::HTML
   def form_method
     @method.to_s.downcase == "get" ? "get" : "post"
   end
-
-  def self.polymorphic_tag(html_tag)
-    attributes_method = "#{html_tag}_attributes"
-    content_method = "#{html_tag}_content"
-
-    define_method html_tag do |object = nil, **attributes, &content|
-      if object.respond_to? attributes_method
-        attributes = object.send(attributes_method).merge(attributes)
-      end
-
-      if object.respond_to? content_method
-        source_content = object.send content_method
-        content = case source_content
-        when Phlex::HTML
-          Proc.new { render source_content }
-        else
-          Proc.new { source_content }
-        end
-      end
-
-      super(**attributes, &content)
-    end
-  end
-
-  polymorphic_tag :textarea
-  polymorphic_tag :input
-  polymorphic_tag :label
-  polymorphic_tag :button
 end

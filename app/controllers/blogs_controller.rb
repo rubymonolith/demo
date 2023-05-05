@@ -6,7 +6,7 @@ class BlogsController < ApplicationController
 
     def title = @blog.title
     def subtitle
-      text "Owned and operated by "
+      plain "Owned and operated by "
       show(@blog.user, :name)
     end
 
