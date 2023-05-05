@@ -21,7 +21,7 @@ class Phlex::Phorm::Field
     when :label
       LabelComponent.new { @attribute.to_s.titleize }
     when :textarea
-      value
+      value.to_s
     end
   end
 
@@ -31,10 +31,10 @@ class Phlex::Phorm::Field
       { for: id }
     when :textarea
       { id: id, name: name }
-    when :input
-      { id: id, name: name, value: value, type: type }
     when :button
-      { value: value, id: id, name: name }
+      { id: id, name: name, value: value.to_s }
+    when :input
+      { id: id, name: name, value: value.to_s, type: type }
     end
   end
 
