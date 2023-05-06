@@ -1,12 +1,8 @@
 class Blogs::Batch::PostsController < ApplicationController
-  before_action :assign_batch
   assign :posts, through: :blogs, from: :current_user
   # TODO: How can I compose `assign :posts, ... with `resources`?
 
   include Batchable
-
-  class ItemForm < ApplicationForm
-  end
 
   class Index < ApplicationView
     attr_accessor :posts, :blog, :current_user, :batch
@@ -21,6 +17,7 @@ class Blogs::Batch::PostsController < ApplicationController
             column.item do |selection|
               input(type: "checkbox", value: selection.selected, name: "batch[items][#{selection.id}][selected]")
               # render ItemForm.new selection
+              input form.namespace(:items, selection.id).field(:selected, type: :checkbox)
             end
           end
           table.column("Title")         { show(_1.item, :title) }
@@ -32,10 +29,10 @@ class Blogs::Batch::PostsController < ApplicationController
         nav do
           ul do
             li do
-              form.button(form.field(:action), value: "delete") { "Delete" }
+              button(form.field(:action), value: "delete") { "Delete" }
             end
             li do
-              form.button(form.field(:action), value: "publish") { "Publish" }
+              button(form.field(:action), value: "publish") { "Publish" }
             end
           end
         end

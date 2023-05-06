@@ -32,6 +32,19 @@ class Phlex::Phorm < Phlex::HTML
     Field.new model: @model, attribute: attribute
   end
 
+  class Namespace
+    def initialize(keys: [])
+      @keys = keys
+    end
+
+    def field(attribute, **attributes)
+    end
+  end
+
+  def namespace(*args)
+    Namespace.new keys: args
+  end
+
   protected
 
   def authenticity_token_field

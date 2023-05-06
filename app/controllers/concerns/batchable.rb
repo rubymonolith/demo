@@ -1,6 +1,10 @@
 module Batchable
   extend ActiveSupport::Concern
 
+  included do
+    before_action :assign_batch
+  end
+
   class Batch
     include Enumerable
 
@@ -26,12 +30,6 @@ module Batchable
 
     def self.action_param_key
       "action"
-    end
-
-    private
-
-    def selected_ids
-      raise "hell"
     end
   end
 
