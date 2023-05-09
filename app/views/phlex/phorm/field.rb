@@ -16,25 +16,20 @@ class Phlex::Phorm::Field
     end
   end
 
-  def html_content(tag)
-    case tag
-    when :label
-      LabelComponent.new { @attribute.to_s.titleize }
-    when :textarea
-      value.to_s
-    end
-  end
-
-  def html_attributes(tag)
-    case tag
-    when :label
-      { for: id }
-    when :textarea
-      { id: id, name: name }
-    when :button
-      { id: id, name: name, value: value.to_s }
-    when :input
-      { id: id, name: name, value: value.to_s, type: type }
+  def phlex_html(element)
+    case element
+      in button: { value: }
+        element.tag(id: id, name: name, value: value.to_s) { value.to_s.titleize }
+      in textarea:
+        element.tag(id: id, name: name) { value }
+      in button:
+        element.tag(id: id, name: name, value: value.to_s)
+      in input:
+        element.tag(id: id, name: name, value: value.to_s, type: type)
+      in label:
+        element.tag(for: id) do
+          LabelComponent.new { @attribute.to_s.titleize }
+        end
     end
   end
 

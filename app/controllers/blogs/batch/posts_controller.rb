@@ -29,10 +29,10 @@ class Blogs::Batch::PostsController < ApplicationController
         nav do
           ul do
             li do
-              button(form.field(:action), value: "delete") { "Delete" }
+              button(form.field(:action), value: "delete")
             end
             li do
-              button(form.field(:action), value: "publish") { "Publish" }
+              button(form.field(:action), value: "publish")
             end
           end
         end

@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bradgessler/phlex.git
-  revision: 495cfa901a4f87f7f00693ed4e3a77267695e55a
+  revision: 520a6ba24b15e62183c6362f606d5d4b72f0922e
   branch: polymorphic-tags
   specs:
     phlex (1.8.1)
