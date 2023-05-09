@@ -1,11 +1,13 @@
 class Phlex::Phorm < Phlex::HTML
-  attr_reader :fields, :model
+  attr_reader :model
+
+  delegate :field, :fields_for, to: :@fields
 
   def initialize(model, action: nil, method: nil)
     @model = model
     @action = action
     @method = method
-    @fields = Set.new
+    @fields = Fields.from_model model
   end
 
   def around_template(&)
@@ -28,21 +30,26 @@ class Phlex::Phorm < Phlex::HTML
     )
   end
 
-  def field(attribute)
-    Field.new model: @model, attribute: attribute
-  end
-
-  class Namespace
-    def initialize(keys: [])
-      @keys = keys
+  class Fields
+    def initialize(keys: [], object: nil)
+      @keys = Array(keys)
+      @object = object
+      @permitted_fields = Set.new
     end
 
     def field(attribute, **attributes)
+      @permitted_fields << attribute.to_sym
+      Field.new object: @object, attribute: attribute, namespace: @keys, **attributes
     end
-  end
 
-  def namespace(*args)
-    Namespace.new keys: args
+    def fields_for(*namespace)
+      *keys, object = namespace
+      self.class.new(keys: @keys + keys, object: object)
+    end
+
+    def self.from_model(model, **kwargs)
+      new object: model, keys: model.model_name.param_key
+    end
   end
 
   protected

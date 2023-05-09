@@ -1,10 +1,10 @@
 class Phlex::Phorm::Field
   include ActionView::Helpers::FormTagHelper
 
-  def initialize(model:, attribute:, namespace: nil, type: nil)
-    @model = model
+  def initialize(object:, attribute:, namespace: nil, type: nil)
+    @object = object
     @attribute = attribute
-    @namespace ||= infer_namespace(model)
+    @namespace = Array(namespace) + Array(attribute)
     @type = type
   end
 
@@ -34,15 +34,15 @@ class Phlex::Phorm::Field
   end
 
   def value
-    @model.send @attribute
+    @object.send @attribute
   end
 
   def id
-    field_id @namespace.last, @attribute
+    field_id *@namespace
   end
 
   def name
-    field_name @namespace.last, @attribute
+    field_name *@namespace
   end
 
   def type
@@ -50,10 +50,6 @@ class Phlex::Phorm::Field
   end
 
   protected
-
-  def infer_namespace(object)
-    Array(object.model_name.param_key)
-  end
 
   def infer_type(name)
     return "email" if name == "email"

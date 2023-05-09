@@ -15,9 +15,9 @@ class Blogs::Batch::PostsController < ApplicationController
         render TableComponent.new(items: @batch) do |table|
           table.column do |column|
             column.item do |selection|
-              input(type: "checkbox", value: selection.selected, name: "batch[items][#{selection.id}][selected]")
+              # input(type: "checkbox", value: selection.selected, name: "batch[items][#{selection.id}][selected]")
               # render ItemForm.new selection
-              input form.namespace(:items, selection.id).field(:selected, type: :checkbox)
+              input form.fields_for(:items, selection.id, selection).field(:selected, type: :checkbox)
             end
           end
           table.column("Title")         { show(_1.item, :title) }
