@@ -1,7 +1,7 @@
 GIT
   remote: https://github.com/bradgessler/phlex.git
-  revision: 520a6ba24b15e62183c6362f606d5d4b72f0922e
-  branch: polymorphic-tags
+  revision: 51877134b6afa769c836b3e55615b4976b66e8df
+  branch: polymorphic-tags-jump-the-shark
   specs:
     phlex (1.8.1)
       concurrent-ruby (~> 1.2)
