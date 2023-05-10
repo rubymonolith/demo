@@ -35,20 +35,36 @@ class Phlex::Phorm < Phlex::HTML
       @keys = Array(keys)
       @object = object
       @permitted_fields = Set.new
+      @fields_for = []
     end
 
-    def field(attribute, **attributes)
-      @permitted_fields << attribute.to_sym
-      Field.new object: @object, attribute: attribute, namespace: @keys, **attributes
+    def field(attribute, permitted: true, **attributes)
+      permit_field(attribute) if permitted
+      Field.new namespace: @keys, object: @object, attribute: attribute, **attributes
     end
 
-    def fields_for(*namespace)
+    def fields_for(*namespace, permitted: true)
       *keys, object = namespace
-      self.class.new(keys: @keys + keys, object: object)
+      attribute = keys.first
+      permit_field(attribute) if permitted
+
+      self.class.new(keys: @keys + keys, object: object).tap do |fields|
+        yield fields if block_given?
+        @fields_for << fields
+      end
     end
 
     def self.from_model(model, **kwargs)
       new object: model, keys: model.model_name.param_key
+    end
+
+    def permit(params)
+    end
+
+    private
+
+    def permit_field(attribute)
+      @permitted_fields << attribute.to_sym
     end
   end
 

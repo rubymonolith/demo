@@ -1,11 +1,13 @@
 class Phlex::Phorm::Field
   include ActionView::Helpers::FormTagHelper
 
-  def initialize(object:, attribute:, namespace: nil, type: nil)
+  def initialize(object:, attribute:, namespace: nil, type: nil, value: nil)
     @object = object
     @attribute = attribute
     @namespace = Array(namespace) + Array(attribute)
     @type = type
+    @value = value
+    @object.send @attribute
   end
 
   class LabelComponent < ApplicationComponent
@@ -34,7 +36,7 @@ class Phlex::Phorm::Field
   end
 
   def value
-    @object.send @attribute
+    @value ||= @object.send @attribute
   end
 
   def id
@@ -52,8 +54,6 @@ class Phlex::Phorm::Field
   protected
 
   def infer_type(name)
-    return "email" if name == "email"
-
     case value
     when URI
       "url"
