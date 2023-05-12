@@ -1,13 +1,13 @@
 class Phlex::Phorm < Phlex::HTML
   attr_reader :model
 
-  delegate :field, :fields_for, to: :@fields
+  delegate :field, :fields_for, to: :@namespace
 
   def initialize(model, action: nil, method: nil)
     @model = model
     @action = action
     @method = method
-    @fields = Fields.from_model model
+    @namespace = Namespace.from_model model
   end
 
   def around_template(&)
@@ -30,41 +30,31 @@ class Phlex::Phorm < Phlex::HTML
     )
   end
 
-  class Fields
+  class Namespace
     def initialize(keys: [], object: nil)
       @keys = Array(keys)
       @object = object
-      @permitted_fields = Set.new
-      @fields_for = []
+      @namespaces = []
+      @fields = []
     end
 
-    def field(attribute, permitted: true, **attributes)
-      permit_field(attribute) if permitted
-      Field.new namespace: @keys, object: @object, attribute: attribute, **attributes
+    def field(attribute, **attributes)
+      Field.new(namespace: @keys, object: @object, attribute: attribute, **attributes) do |field|
+        @fields.append field
+      end
     end
 
-    def fields_for(*namespace, permitted: true)
+    def fields_for(*namespace)
       *keys, object = namespace
       attribute = keys.first
-      permit_field(attribute) if permitted
 
-      self.class.new(keys: @keys + keys, object: object).tap do |fields|
+      @namespaces << self.class.new(keys: @keys + keys, object: object).tap do |fields|
         yield fields if block_given?
-        @fields_for << fields
       end
     end
 
     def self.from_model(model, **kwargs)
       new object: model, keys: model.model_name.param_key
-    end
-
-    def permit(params)
-    end
-
-    private
-
-    def permit_field(attribute)
-      @permitted_fields << attribute.to_sym
     end
   end
 

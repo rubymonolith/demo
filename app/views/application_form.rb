@@ -1,15 +1,30 @@
 # frozen_string_literal: true
 
 class ApplicationForm < Phlex::Phorm
+  def self.register_polymorphic_element(tag)
+  end
+
+  def input(object = nil, **attributes, &content)
+    component = object.send(:input, **attributes) if object and object.respond_to? :input
+
+    if component
+      render component
+    else
+      super
+    end
+  end
+
   def input_field(field_name, **attributes)
     form_row(field_name) do
-      input field(field_name), **attributes
+      render field(field_name).label
+      render field(field_name).input
     end
   end
 
   def textarea_field(field_name, **attributes)
     form_row(field_name) do
-      textarea field(field_name), **attributes
+      render field(field_name).label
+      render field(field_name).textarea(**attributes)
     end
   end
 
