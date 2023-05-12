@@ -12,32 +12,42 @@ class Phlex::Phorm::Field
     @permitted = permitted
   end
 
-  class LabelComponent < ApplicationComponent
-    def initialize(field:)
+  class FieldComponent < ApplicationComponent
+    def initialize(field:, attributes: {})
       @field = field
+      @attributes = field_attributes.merge(attributes)
+    end
+
+    def field_attributes
+      {}
+    end
+  end
+
+  class LabelComponent < FieldComponent
+    def field_attributes
+      @field.label_attributes
     end
 
     def template(&)
-      label(**@field.label_attributes) do
+      label(**@attributes) do
         @field.attribute.to_s.titleize
       end
     end
   end
 
-  class InputComponent < ApplicationComponent
-    def initialize(field:)
-      @field = field
+  class InputComponent < FieldComponent
+    def field_attributes
+      @field.input_attributes
     end
 
     def template(&)
-      input(**@field.input_attributes)
+      input(**@attributes)
     end
   end
 
-  class TextareaComponent < ApplicationComponent
-    def initialize(field:, attributes: {})
-      @field = field
-      @attributes = @field.textarea_attributes.merge(attributes)
+  class TextareaComponent < FieldComponent
+    def field_attributes
+      @field.textarea_attributes
     end
 
     def template(&)
@@ -48,11 +58,11 @@ class Phlex::Phorm::Field
   end
 
   def input(**attributes)
-    InputComponent.new(field: self)
+    InputComponent.new(field: self, attributes: attributes)
   end
 
   def label(**attributes)
-    LabelComponent.new(field: self)
+    LabelComponent.new(field: self, attributes: attributes)
   end
 
   def textarea(**attributes)
