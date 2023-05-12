@@ -12,6 +12,10 @@ class Phlex::Phorm::Field
     @permitted = permitted
   end
 
+  def permitted?
+    @permitted
+  end
+
   class FieldComponent < ApplicationComponent
     def initialize(field:, attributes: {})
       @field = field

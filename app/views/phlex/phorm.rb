@@ -1,7 +1,7 @@
 class Phlex::Phorm < Phlex::HTML
   attr_reader :model
 
-  delegate :field, :fields_for, to: :@namespace
+  delegate :field, :fields_for, :permit, to: :@namespace
 
   def initialize(model, action: nil, method: nil)
     @model = model
@@ -31,26 +31,43 @@ class Phlex::Phorm < Phlex::HTML
   end
 
   class Namespace
+    attr_reader :keys
+
     def initialize(keys: [], object: nil)
-      @keys = Array(keys)
+      @keys = Array(keys).freeze
       @object = object
-      @namespaces = []
-      @fields = []
+      @namespaces = {}
+      @fields = {}
     end
 
     def field(attribute, **attributes)
-      Field.new(namespace: @keys, object: @object, attribute: attribute, **attributes) do |field|
-        @fields.append field
+      @fields[attribute] ||= begin
+        Field.new(namespace: @keys, object: @object, attribute: attribute, **attributes)
+      end.tap do |field|
+        yield field if block_given?
       end
     end
 
     def fields_for(*namespace)
-      *keys, object = namespace
-      attribute = keys.first
-
-      @namespaces << self.class.new(keys: @keys + keys, object: object).tap do |fields|
-        yield fields if block_given?
+      @namespaces[namespace] ||= begin
+        *keys, object = namespace
+        attribute = keys.first
+        self.class.new(keys: @keys + keys, object: object)
+      end.tap do |namespace|
+        yield namespace if block_given?
       end
+    end
+
+    def permitted_fields
+      @fields.values.select(&:permitted?)
+    end
+
+    def permitted_field_keys
+      permitted_fields.map(&:attribute)
+    end
+
+    def permit(params)
+      params.require(*@keys).permit(*permitted_field_keys)
     end
 
     def self.from_model(model, **kwargs)
