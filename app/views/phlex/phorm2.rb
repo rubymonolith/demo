@@ -210,12 +210,10 @@ module Phlex::Phorm2
       end
     end
 
-    # WE DO NOT NEED THIS IN PROD
     def dom_name
       field_name *name_keys
     end
 
-    # WE DO NOT NEED THIS IN PROD
     def dom_id
       field_id *name_keys
     end
