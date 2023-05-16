@@ -17,8 +17,8 @@ class Blogs::Batch::PostsController < ApplicationController
             column.item do |selection|
               # input(type: "checkbox", value: selection.selected, name: "batch[items][#{selection.id}][selected]")
               # render ItemForm.new selection
-              form.fields_for(:items, selection.id, selection) do |selection|
-                input selection.field(:selected, type: :checkbox, value: "on")
+              form.collection(:items) do |selection|
+                render selection.field(:selected).input(type: :checkbox, value: "on")
               end
             end
           end
