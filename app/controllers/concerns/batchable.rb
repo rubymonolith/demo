@@ -2,64 +2,53 @@ module Batchable
   extend ActiveSupport::Concern
 
   included do
-    before_action :assign_batch
+    before_action :assign_selection
   end
 
-  class Batch
-    include Enumerable
-
+  class Selection
     include ActiveModel::API
-    attr_accessor :items, :scope, :action
+    attr_accessor :selected, :action, :scope
 
-    class Item
-      include ActiveModel::API
-      attr_accessor :selected, :item
-
-      delegate :id, to: :item
+    def selected
+      @selected ||= []
     end
 
-    def selection
-      @scope.where(id: ids)
-    end
-
-    def each
-      @scope.each do |item|
-        yield Item.new(item: item, selected: false)
-      end
+    def selected_items
+      items.where(id: selected)
     end
 
     def items
-      Enumerator.new do |y|
-        @scope.each do |item|
-          y << Item.new(item: item, selected: false)
-        end
-      end
+      @scope
     end
 
     def self.action_param_key
-      "action"
+      :action
+    end
+
+    def self.permit(params)
+      params.fetch(model_name.param_key, {}).permit(:action, selected: [])
+    end
+
+    def self.action(params)
+      params.dig model_name.param_key, action_param_key
     end
   end
 
   protected
 
-  def assign_batch
-    @batch = Batch.new(scope: @blog.posts, **permitted_batch_params)
+  def assign_selection
+    @selection = Selection.new(scope: scope, **permitted_batch_params)
   end
 
   def permitted_batch_params
-    params.fetch(Batch.model_name.param_key, {}).permit(:action, items: [:selected])
+    Selection.permit params
   end
 
   def method_for_action(action_name)
-    routable_batch_action? ? batch_action : super
-  end
-
-  def batch_action
-    params.dig Batch.model_name.param_key, Batch.action_param_key
+    routable_batch_action? ? Selection.action(params) : super
   end
 
   def routable_batch_action?
-    self.class.action_methods.include? batch_action
+    self.class.action_methods.include? Selection.action(params)
   end
 end

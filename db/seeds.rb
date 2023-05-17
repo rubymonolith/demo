@@ -7,5 +7,9 @@
 #   Character.create(name: "Luke", movie: movies.first)
 
 User.create!(name: "Bob Law", email: "bob.law@example.com").tap do |user|
-  user.blogs.create! title: "Law Blog"
+  user.blogs.create!(title: "Law Blog").tap do |blog|
+    (1..10).each do |n|
+      blog.posts.create! title: "The #{n.ordinalize} Post", user: user
+    end
+  end
 end

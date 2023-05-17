@@ -4,7 +4,7 @@ class ApplicationForm < Phlex::Phorm2::Form
   def input_field(field_name, **attributes)
     form_row(field_name) do
       render field(field_name).label
-      render field(field_name).input
+      render field(field_name).input(**attributes)
     end
   end
 

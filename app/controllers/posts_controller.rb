@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   class Form < ApplicationForm
     def template
       input_field :title
-      input_field :publish_at
+      input_field :publish_at, type: :text
       textarea_field :content, rows: 6
 
       submit

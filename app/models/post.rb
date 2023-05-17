@@ -9,10 +9,10 @@ class Post < ApplicationRecord
   def status
     status = if publish_at.nil?
       "Draft"
-    elsif publish_at < Time.now
-      "Published"
-    else
+    elsif publish_at > Time.current
       "Unpublished"
+    else
+      "Published"
     end
 
     ActiveSupport::StringInquirer.new(status)

@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   resources :blogs do
     nest :posts do
-      batch :delete, :publish
+      batch :delete, :publish, :unpublish
     end
   end
 

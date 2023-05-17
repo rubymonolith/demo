@@ -1,40 +1,51 @@
 class Blogs::Batch::PostsController < ApplicationController
   assign :posts, through: :blogs, from: :current_user
-  # TODO: How can I compose `assign :posts, ... with `resources`?
 
+  # TODO: How can I compose `assign :posts, ... with `resources`?
   include Batchable
+  def scope
+    @blog.posts
+  end
+  # / TODO: How can I compose `assign :posts, ... with `resources`?
 
   class Index < ApplicationView
-    attr_accessor :posts, :blog, :current_user, :batch
+    attr_accessor :posts, :blog, :current_user, :selection
 
     def title = "#{@blog.title} Posts"
-    def subtitle = "Select posts"
+    def subtitle
+      plain "Select posts from "
+      show(@blog, :title)
+    end
 
     def template(&)
-      render ApplicationForm.new(@batch, action: url_for) do |form|
-        render TableComponent.new(items: @batch) do |table|
+      render ApplicationForm.new(@selection, action: url_for) do |form|
+        render TableComponent.new(items: @selection.items) do |table|
           table.column do |column|
             column.item do |item|
-              form.collection(:items) do |selection|
-                render selection.field(:selected).input(type: :checkbox, value: item.id)
+              form.collection(:selected) do |selection|
+                render selection.field(value: item.id).input(type: :checkbox)
               end
             end
           end
-          table.column("Title")         { show(_1.item, :title) }
-          table.column("Author")        { show(_1.item.user, :name) }
-          table.column("Status")        { "Not Published" }
-          table.column("Publish Date")  { _1.item.publish_at&.to_formatted_s(:long) }
+          table.column("Title")         { show(_1, :title) }
+          table.column("Author")        { show(_1.user, :name) }
+          table.column("Status")        { _1.status }
+          table.column("Publish Date")  { _1.publish_at&.to_formatted_s(:long) }
         end
-
-        # plain form.permitted_keys.inspect
 
         nav do
           ul do
             li do
-              button(form.field(:action), value: "delete") { "Delete" }
+              render form.field(:action, value: "delete").button
             end
             li do
-              button(form.field(:action), value: "publish") { "Publish" }
+              render form.field(:action, value: "publish").button
+            end
+            li do
+              render form.field(:action, value: "unpublish").button
+            end
+            li do
+              show(@blog) { "Cancel selection" }
             end
           end
         end
@@ -43,10 +54,17 @@ class Blogs::Batch::PostsController < ApplicationController
   end
 
   def delete
-    @posts.delete_all
+    @selection.selected_items.delete_all
+    redirect_to action: :index
   end
 
   def publish
-    @blog.posts.update(publish_at: Time.current)
+    @selection.selected_items.update_all(publish_at: Time.current)
+    redirect_to action: :index
+  end
+
+  def unpublish
+    @selection.selected_items.update_all(publish_at: nil)
+    redirect_to action: :index
   end
 end

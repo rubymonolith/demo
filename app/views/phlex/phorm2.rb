@@ -2,7 +2,7 @@ module Phlex::Phorm2
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, :permitted_keys, to: :@field
+    delegate :field, :collection, :to_h, :permitted_keys, to: :@field
 
     def initialize(model, action: nil, method: nil)
       @model = model
@@ -74,34 +74,6 @@ module Phlex::Phorm2
     end
   end
 
-  class Registry
-    include Enumerable
-
-    def initialize
-      @fields = []
-    end
-
-    def append(field)
-      if existing_field = @fields.find { |f| f.name == field.name }
-        existing_field
-      else
-        @fields << field
-        field
-      end
-    end
-    alias :<< :append
-
-    def add(field, &block)
-      append(field).tap do |field|
-        yield field if block_given?
-      end
-    end
-
-    def each(&)
-      @fields.each(&)
-    end
-  end
-
   class Field
     include ActionView::Helpers::FormTagHelper
 
@@ -110,7 +82,7 @@ module Phlex::Phorm2
     def initialize(key = nil, value: nil, parent: nil, permitted: true)
       @key = key
       @parent = parent
-      @children = Registry.new
+      @children = []
       @value = value || parent_value
       @permitted = true
       yield self if block_given?
@@ -122,17 +94,6 @@ module Phlex::Phorm2
 
     def name
       @key unless @parent.is_a? Collection
-    end
-
-    def permitted_keys
-      @children.select(&:permitted?).map do |child|
-        case child
-        when Collection
-          child.permitted_keys
-        when Field
-          child.key
-        end
-      end
     end
 
     def permit(params)
@@ -162,6 +123,23 @@ module Phlex::Phorm2
 
       def attributes
         { for: @field.dom_id }.merge(@attributes)
+      end
+    end
+
+    class ButtonComponent < ApplicationComponent
+      def initialize(field:, attributes: {})
+        @field = field
+        @attributes = attributes
+      end
+
+      def template(&)
+        button(**attributes) do
+          @field.value.to_s.titleize
+        end
+      end
+
+      def attributes
+        { id: @field.dom_id, name: @field.dom_name, value: @field.value.to_s }
       end
     end
 
@@ -224,18 +202,22 @@ module Phlex::Phorm2
       TextareaComponent.new(field: self, attributes: attributes)
     end
 
-    def collection(*args, **kwargs, &)
-      @children.add Collection.new(*args, parent: self, **kwargs), &
+    def button(**attributes)
+      ButtonComponent.new(field: self, attributes: attributes)
     end
 
-    def field(*args, **kwargs, &)
-      field = if args.empty? and kwargs.empty?
-        self
-      else
-        Field.new(*args, parent: self, **kwargs)
-      end
+    def collection(key, **kwargs, &)
+      add_child Collection.new(key, parent: self, **kwargs), &
+    end
 
-      @children.add field, &
+    def field(key = nil, **kwargs, &)
+      add_child Field.new(key, parent: self, **kwargs), &
+    end
+
+    def add_child(field, &block)
+      @children << field
+      yield field if block_given?
+      field
     end
 
     def dom_name
@@ -254,11 +236,22 @@ module Phlex::Phorm2
       parents.map(&:name).reverse.append(name)
     end
 
+    def permitted_keys
+      children(&:permitted).map do |child|
+        if child.permitted_keys.any?
+          { child.key => child.permitted_keys }
+        else
+          child.key
+        end
+      end
+    end
+
     def to_h
       @children.each_with_object({}) do |f, h|
         h[f.name] = f.children.any? ? f.to_h : f.value
       end
     end
+
 
     private
 
@@ -281,12 +274,6 @@ module Phlex::Phorm2
     def to_h
       @children.map do |child|
         child.children.any? ? child.to_h : child.value
-      end
-    end
-
-    def permitted_keys
-      if permitted_child = @children.find(&:permitted?)
-        { key => permitted_child.permitted_keys }
       end
     end
 
