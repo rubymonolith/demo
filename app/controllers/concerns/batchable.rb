@@ -28,6 +28,14 @@ module Batchable
       end
     end
 
+    def items
+      Enumerator.new do |y|
+        @scope.each do |item|
+          y << Item.new(item: item, selected: false)
+        end
+      end
+    end
+
     def self.action_param_key
       "action"
     end

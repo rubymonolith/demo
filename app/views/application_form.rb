@@ -26,8 +26,4 @@ class ApplicationForm < Phlex::Phorm2::Form
       end
     end
   end
-
-  def permit(params)
-    params.require(@model.model_name.param_key).permit(*@fields)
-  end
 end

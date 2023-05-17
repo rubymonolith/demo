@@ -41,12 +41,12 @@ class PostsController < ApplicationController
       table do
         tbody do
           tr do
-            th { "Publish at" }
-            td { @post.publish_at&.to_formatted_s(:long) }
-          end
-          tr do
             th { "Status" }
             td { @post.status }
+          end
+          tr do
+            th { "Publish at" }
+            td { @post.publish_at&.to_formatted_s(:long) }
           end
           tr do
             th { "Content" }

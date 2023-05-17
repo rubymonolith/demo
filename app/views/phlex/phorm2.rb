@@ -2,7 +2,7 @@ module Phlex::Phorm2
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, to: :@field
+    delegate :field, :collection, :permitted_keys, to: :@field
 
     def initialize(model, action: nil, method: nil)
       @model = model
@@ -29,6 +29,10 @@ module Phlex::Phorm2
         type: "submit",
         value: value
       )
+    end
+
+    def permit(params)
+      params.require(@field.key).permit(*@field.permitted_keys)
     end
 
     protected
@@ -70,6 +74,34 @@ module Phlex::Phorm2
     end
   end
 
+  class Registry
+    include Enumerable
+
+    def initialize
+      @fields = []
+    end
+
+    def append(field)
+      if existing_field = @fields.find { |f| f.name == field.name }
+        existing_field
+      else
+        @fields << field
+        field
+      end
+    end
+    alias :<< :append
+
+    def add(field, &block)
+      append(field).tap do |field|
+        yield field if block_given?
+      end
+    end
+
+    def each(&)
+      @fields.each(&)
+    end
+  end
+
   class Field
     include ActionView::Helpers::FormTagHelper
 
@@ -78,14 +110,33 @@ module Phlex::Phorm2
     def initialize(key = nil, value: nil, parent: nil, permitted: true)
       @key = key
       @parent = parent
-      @children = []
+      @children = Registry.new
       @value = value || parent_value
       @permitted = true
       yield self if block_given?
     end
 
+    def permitted?
+      @permitted
+    end
+
     def name
       @key unless @parent.is_a? Collection
+    end
+
+    def permitted_keys
+      @children.select(&:permitted?).map do |child|
+        case child
+        when Collection
+          child.permitted_keys
+        when Field
+          child.key
+        end
+      end
+    end
+
+    def permit(params)
+      params.require(@key).permit(*permitted_keys)
     end
 
     def parents
@@ -173,41 +224,18 @@ module Phlex::Phorm2
       TextareaComponent.new(field: self, attributes: attributes)
     end
 
-    class Collection < self
-      include Enumerable
-
-      def values
-        Enumerator.new do |y|
-          @value.each.with_index do |value, index|
-            y << field(index, value: value)
-          end
-        end
-      end
-
-      def to_h
-        @children.map do |child|
-          child.children.any? ? child.to_h : child.value
-        end
-      end
-
-      def each(&)
-        values.each(&)
-      end
+    def collection(*args, **kwargs, &)
+      @children.add Collection.new(*args, parent: self, **kwargs), &
     end
 
-    def collection(*args, **kwargs)
-      Collection.new(*args, parent: self, **kwargs).tap do |c|
-        @children << c
-        yield c if block_given?
+    def field(*args, **kwargs, &)
+      field = if args.empty? and kwargs.empty?
+        self
+      else
+        Field.new(*args, parent: self, **kwargs)
       end
-    end
 
-    def field(*args, **kwargs)
-      return self if args.empty? and kwargs.empty?
-      Field.new(*args, parent: self, **kwargs).tap do |f|
-        @children << f
-        yield f if block_given?
-      end
+      @children.add field, &
     end
 
     def dom_name
@@ -236,6 +264,34 @@ module Phlex::Phorm2
 
     def parent_value
       @parent.value.send @key if @key and @parent and @parent.value and @parent.value.respond_to? @key
+    end
+  end
+
+  class Collection < Field
+    include Enumerable
+
+    def values
+      Enumerator.new do |y|
+        @value.each.with_index do |value, index|
+          y << field(index, value: value)
+        end
+      end
+    end
+
+    def to_h
+      @children.map do |child|
+        child.children.any? ? child.to_h : child.value
+      end
+    end
+
+    def permitted_keys
+      if permitted_child = @children.find(&:permitted?)
+        { key => permitted_child.permitted_keys }
+      end
+    end
+
+    def each(&)
+      values.each(&)
     end
   end
 end

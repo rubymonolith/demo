@@ -26,6 +26,8 @@ class Blogs::Batch::PostsController < ApplicationController
           table.column("Publish Date")  { _1.item.publish_at&.to_formatted_s(:long) }
         end
 
+        # plain form.permitted_keys.inspect
+
         nav do
           ul do
             li do
