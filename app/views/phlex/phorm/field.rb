@@ -1,132 +1,188 @@
-class Phlex::Phorm::Field
-  include ActionView::Helpers::FormTagHelper
+module Phlex::Phorm
 
-  attr_reader :attribute
+  class Field
+    include ActionView::Helpers::FormTagHelper
 
-  def initialize(object:, attribute:, namespace: nil, type: nil, value: nil, permitted: true)
-    @object = object
-    @attribute = attribute
-    @namespace = Array(namespace) + Array(attribute)
-    @type = type
-    @value = value
-    @permitted = permitted
-  end
+    attr_reader :value, :parent, :children, :key
 
-  def permitted?
-    @permitted
-  end
-
-  class FieldComponent < ApplicationComponent
-    def initialize(field:, attributes: {})
-      @field = field
-      @attributes = field_attributes.merge(attributes)
+    def initialize(key = nil, value: nil, parent: nil, permitted: true)
+      @key = key
+      @parent = parent
+      @children = []
+      @value = value || parent_value
+      @permitted = true
+      yield self if block_given?
     end
 
-    def field_attributes
-      {}
-    end
-  end
-
-  class LabelComponent < FieldComponent
-    def field_attributes
-      @field.label_attributes
+    def permitted?
+      @permitted
     end
 
-    def template(&)
-      label(**@attributes) do
-        @field.attribute.to_s.titleize
+    def name
+      @key unless @parent.is_a? Collection
+    end
+
+    def permit(params)
+      params.require(@key).permit(*permitted_keys)
+    end
+
+    def parents
+      field = self
+      Enumerator.new do |y|
+        while field = field.parent
+          y << field
+        end
       end
     end
-  end
 
-  class InputComponent < FieldComponent
-    def field_attributes
-      @field.input_attributes
-    end
+    class LabelComponent < ApplicationComponent
+      def initialize(field:, attributes: {})
+        @field = field
+        @attributes = attributes
+      end
 
-    def template(&)
-      input(**@attributes)
-    end
-  end
+      def template(&)
+        label(**attributes) do
+          @field.key.to_s.titleize
+        end
+      end
 
-  class TextareaComponent < FieldComponent
-    def field_attributes
-      @field.textarea_attributes
-    end
-
-    def template(&)
-      textarea(**@attributes) do
-        @field.value
+      def attributes
+        { for: @field.dom_id }.merge(@attributes)
       end
     end
-  end
 
-  def input(**attributes)
-    InputComponent.new(field: self, attributes: attributes)
-  end
+    class ButtonComponent < ApplicationComponent
+      def initialize(field:, attributes: {})
+        @field = field
+        @attributes = attributes
+      end
 
-  def label(**attributes)
-    LabelComponent.new(field: self, attributes: attributes)
-  end
+      def template(&)
+        button(**attributes) do
+          @field.value.to_s.titleize
+        end
+      end
 
-  def textarea(**attributes)
-    TextareaComponent.new(field: self, attributes: attributes)
-  end
-
-  def textarea_attributes
-    { id: id, name: name }
-  end
-
-  def label_attributes
-    { for: id }
-  end
-
-  def input_attributes
-    { id: id, name: name, value: value.to_s, type: type }
-  end
-
-  def forms
-    @value.each do |object|
-      Phlex::Phorm::Namespace.new(object: object, namespace: @namespace)
+      def attributes
+        { id: @field.dom_id, name: @field.dom_name, value: @field.value.to_s }
+      end
     end
-  end
 
-  def values
-    @value.each do |value|
-      self.class.new(value: value, namespace: @namespace + [[], :foo])
+    class InputComponent < ApplicationComponent
+      def initialize(field:, attributes: {})
+        @field = field
+        @attributes = attributes
+      end
+
+      def template(&)
+        input(**attributes.merge(@attributes))
+      end
+
+      def attributes
+        { id: @field.dom_id, name: @field.dom_name, value: @field.value.to_s, type: type }
+      end
+
+      def type
+        case @field.value
+        when URI
+          "url"
+        when Integer
+          "number"
+        when Date, DateTime
+          "date"
+        when Time
+          "time"
+        else
+          "text"
+        end
+      end
     end
-  end
 
-  def value
-    @value ||= @object.send @attribute
-  end
+    class TextareaComponent < ApplicationComponent
+      def initialize(field:, attributes: {})
+        @field = field
+        @attributes = attributes
+      end
 
-  def id
-    field_id *@namespace
-  end
+      def template(&)
+        textarea(**attributes.merge(@attributes)) do
+          @field.value
+        end
+      end
 
-  def name
-    field_name *@namespace
-  end
+      def attributes
+        { id: @field.dom_id, name: @field.dom_name }
+      end
+    end
 
-  def type
-    @type ||= infer_type(value)
-  end
+    def input(**attributes)
+      InputComponent.new(field: self, attributes: attributes)
+    end
 
-  protected
+    def label(**attributes)
+      LabelComponent.new(field: self)
+    end
 
-  def infer_type(name)
-    case value
-    when URI
-      "url"
-    when Integer
-      "number"
-    when Date, DateTime
-      "date"
-    when Time
-      "time"
-    else
-      "text"
+    def textarea(**attributes)
+      TextareaComponent.new(field: self, attributes: attributes)
+    end
+
+    def button(**attributes)
+      ButtonComponent.new(field: self, attributes: attributes)
+    end
+
+    def collection(key, **kwargs, &)
+      add_child Collection.new(key, parent: self, **kwargs), &
+    end
+
+    def field(key = nil, **kwargs, &)
+      add_child Field.new(key, parent: self, **kwargs), &
+    end
+
+    def add_child(field, &block)
+      @children << field
+      yield field if block_given?
+      field
+    end
+
+    def dom_name
+      field_name *name_keys
+    end
+
+    def dom_id
+      field_id *name_keys
+    end
+
+    def id_keys
+      parents.map(&:key).reverse.append(key)
+    end
+
+    def name_keys
+      parents.map(&:name).reverse.append(name)
+    end
+
+    def permitted_keys
+      children(&:permitted).map do |child|
+        if child.permitted_keys.any?
+          { child.key => child.permitted_keys }
+        else
+          child.key
+        end
+      end
+    end
+
+    def to_h
+      @children.each_with_object({}) do |f, h|
+        h[f.name] = f.children.any? ? f.to_h : f.value
+      end
+    end
+
+
+    private
+
+    def parent_value
+      @parent.value.send @key if @key and @parent and @parent.value and @parent.value.respond_to? @key
     end
   end
 end

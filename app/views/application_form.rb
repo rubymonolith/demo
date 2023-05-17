@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class ApplicationForm < Phlex::Phorm2::Form
+class ApplicationForm < Phlex::Phorm::Form
   def input_field(field_name, **attributes)
     form_row(field_name) do
       render field(field_name).label
