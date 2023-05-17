@@ -10,7 +10,7 @@ class Post < ApplicationRecord
     status = if publish_at.nil?
       "Draft"
     elsif publish_at > Time.current
-      "Unpublished"
+      "Scheduled"
     else
       "Published"
     end
