@@ -134,7 +134,7 @@ module Phlex::Phorm
       add_child Collection.new(key, parent: self, **kwargs), &
     end
 
-    def field(key = nil, **kwargs, &)
+    def field(key, **kwargs, &)
       add_child Field.new(key, parent: self, **kwargs), &
     end
 

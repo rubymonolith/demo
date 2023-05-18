@@ -131,12 +131,23 @@ RSpec.describe Phlex::Phorm::Field do
         name.field(:last)
       end
       form.field(:email)
-      form.collection(:nicknames).each do |nickname|
-        nickname.field
-      end
+      form.collection(:nicknames)
       form.collection(:addresses).each do |address|
         address.field(:id)
         address.field(:street)
+      end
+      form.collection(:modulo) do |collection|
+        4.times do |i|
+          collection.append do |modulo|
+            if (i % 2 == 0)
+              modulo.field(:fizz, value: i)
+            else
+              modulo.field(:buzz) do |buzz|
+                buzz.field(:saw, value: i)
+              end
+            end
+          end
+        end
       end
     end
 
@@ -151,8 +162,27 @@ RSpec.describe Phlex::Phorm::Field do
           addresses: [
             { id: 100, street: "Main St" },
             { id: 200, street: "Big Blvd" }
+          ],
+          modulo: [
+            { fizz: 0 },
+            { buzz: { saw: 1 }},
+            { fizz: 2 },
+            { buzz: { saw: 3 }}
           ]
         )
+      end
+    end
+
+    describe "#permitted_keys" do
+      subject { form.permitted_keys }
+
+      it do
+        is_expected.to eql([
+          { name: [:first, :last] },
+          :email,
+          { nicknames: [] },
+          { addresses: [:id, :street] }
+        ])
       end
     end
   end

@@ -2,20 +2,28 @@ module Phlex::Phorm
   class Collection < Field
     include Enumerable
 
+    def initialize(...)
+      @index = 0
+      super(...)
+    end
+
     def values
       Enumerator.new do |y|
-        @value.each.with_index do |value, index|
-          y << field(index, value: value)
+        @value.each do |value|
+          y << field(value: value)
         end
       end
     end
 
-    def to_h
-      @children.map do |child|
-        # A child might have a nil key set, which is a field that
-        # is a blank collection.
-        child.children.find(&:key) ? child.to_h : child.value
+    def field(**kwargs, &block)
+      super(@index, **kwargs, &block).tap do
+        @index += 1
       end
+    end
+    alias :append :field
+
+    def to_h
+      @children.map(&:to_h)
     end
 
     def each(&)
