@@ -138,12 +138,6 @@ module Phlex::Phorm
       add_child Field.new(key, parent: self, **kwargs), &
     end
 
-    def add_child(field, &block)
-      @children << field
-      block.call field if block
-      field
-    end
-
     def permitted_keys
       children(&:permitted).map do |child|
         if child.permitted_keys.any?
@@ -160,14 +154,16 @@ module Phlex::Phorm
       end
     end
 
-    def root?
-      @parent.nil?
-    end
-
     private
 
     def parent_value
       @parent.value.send @key if @key and @parent and @parent.value and @parent.value.respond_to? @key
+    end
+
+    def add_child(field, &block)
+      @children << field
+      block.call field if block
+      field
     end
   end
 end

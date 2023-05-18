@@ -130,6 +130,7 @@ RSpec.describe Phlex::Phorm::Field do
         name.field(:first, value: "Brad")
         name.field(:last)
       end
+      form.field(:email)
       form.collection(:nicknames).each do |nickname|
         nickname.field
       end
@@ -139,17 +140,20 @@ RSpec.describe Phlex::Phorm::Field do
       end
     end
 
-    subject { form.to_h }
+    describe "#to_h" do
+      subject { form.to_h }
 
-    it do
-      is_expected.to eql(
-        name: { first: "Brad", last: "d" },
-        nicknames: user.nicknames,
-        addresses: [
-          { id: 100, street: "Main St" },
-          { id: 200, street: "Big Blvd" }
-        ]
-      )
+      it do
+        is_expected.to eql(
+          name: { first: "Brad", last: "d" },
+          nicknames: user.nicknames,
+          email: "brad@example.com",
+          addresses: [
+            { id: 100, street: "Main St" },
+            { id: 200, street: "Big Blvd" }
+          ]
+        )
+      end
     end
   end
 end
