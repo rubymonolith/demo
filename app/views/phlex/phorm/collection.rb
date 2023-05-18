@@ -12,7 +12,9 @@ module Phlex::Phorm
 
     def to_h
       @children.map do |child|
-        child.children.any? ? child.to_h : child.value
+        # A child might have a nil key set, which is a field that
+        # is a blank collection.
+        child.children.find(&:key) ? child.to_h : child.value
       end
     end
 

@@ -66,8 +66,8 @@ RSpec.describe Phlex::Phorm::Field do
     end
   end
 
-  describe "#each" do
-    context "values" do
+  describe "#values" do
+    context "array of values" do
       let(:field) { form.collection(:nicknames).values.first }
       subject{ field }
       it "returns value" do
@@ -92,7 +92,7 @@ RSpec.describe Phlex::Phorm::Field do
       end
     end
 
-    context "objects" do
+    context "array of objects" do
       let(:field) { form.collection(:addresses).values.first.field(:street) }
       subject{ field }
       it "returns value" do
@@ -138,7 +138,7 @@ RSpec.describe Phlex::Phorm::Field do
 
     it do
       is_expected.to eql(
-        name: { first: "Brad", last: nil },
+        name: { first: "Brad", last: "d" },
         nicknames: user.nicknames,
         addresses: [
           { id: 100, street: "Main St" },

@@ -142,7 +142,7 @@ module Phlex::Phorm
 
     def add_child(field, &block)
       @children << field
-      yield field if block_given?
+      block.call field if block
       field
     end
 
@@ -151,7 +151,7 @@ module Phlex::Phorm
     end
 
     def dom_id
-      field_id *name_keys
+      field_id *id_keys
     end
 
     def id_keys
@@ -178,6 +178,9 @@ module Phlex::Phorm
       end
     end
 
+    def root?
+      @parent.nil?
+    end
 
     private
 
