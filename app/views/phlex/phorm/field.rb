@@ -1,9 +1,6 @@
 module Phlex::Phorm
-
   class Field
-    include ActionView::Helpers::FormTagHelper
-
-    attr_reader :value, :parent, :children, :key
+    attr_reader :value, :parent, :children, :key, :dom
 
     def initialize(key = nil, value: nil, parent: nil, permitted: true)
       @key = key
@@ -11,6 +8,7 @@ module Phlex::Phorm
       @children = []
       @value = value || parent_value
       @permitted = true
+      @dom = DOM.new(field: self)
       yield self if block_given?
     end
 
@@ -48,7 +46,7 @@ module Phlex::Phorm
       end
 
       def attributes
-        { for: @field.dom_id }.merge(@attributes)
+        { for: @field.dom.id }.merge(@attributes)
       end
     end
 
@@ -65,7 +63,7 @@ module Phlex::Phorm
       end
 
       def attributes
-        { id: @field.dom_id, name: @field.dom_name, value: @field.value.to_s }
+        { id: @field.dom.id, name: @field.dom.name, value: @field.value.to_s }
       end
     end
 
@@ -80,7 +78,7 @@ module Phlex::Phorm
       end
 
       def attributes
-        { id: @field.dom_id, name: @field.dom_name, value: @field.value.to_s, type: type }
+        { id: @field.dom.id, name: @field.dom.name, value: @field.value.to_s, type: type }
       end
 
       def type
@@ -112,7 +110,7 @@ module Phlex::Phorm
       end
 
       def attributes
-        { id: @field.dom_id, name: @field.dom_name }
+        { id: @field.dom.id, name: @field.dom.name }
       end
     end
 
@@ -144,22 +142,6 @@ module Phlex::Phorm
       @children << field
       block.call field if block
       field
-    end
-
-    def dom_name
-      field_name *name_keys
-    end
-
-    def dom_id
-      field_id *id_keys
-    end
-
-    def id_keys
-      parents.map(&:key).reverse.append(key)
-    end
-
-    def name_keys
-      parents.map(&:name).reverse.append(name)
     end
 
     def permitted_keys

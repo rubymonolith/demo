@@ -31,37 +31,41 @@ RSpec.describe Phlex::Phorm::Field do
   end
 
   describe "child" do
-    subject{ form.field(:name) }
+    let(:field) { form.field(:name) }
+    subject { field }
     it "returns value from parent" do
       expect(subject.value).to eql "Brad"
     end
     describe "#dom" do
+      subject { field.dom }
       it "generates name" do
-        expect(subject.dom_name).to eql("user[name]")
+        expect(subject.name).to eql("user[name]")
       end
       it "generates id" do
-        expect(subject.dom_id).to eql("user_name")
+        expect(subject.id).to eql("user_name")
       end
     end
   end
 
   describe "#field" do
-    subject{ form.field(:one).field(:two).field(:three).field(:four, value: 5) }
+    let(:field) { form.field(:one).field(:two).field(:three).field(:four, value: 5) }
+    subject{ field }
     it "returns value" do
       expect(subject.value).to eql 5
     end
-    it "returns name_keys" do
-      expect(subject.name_keys.map(&:name)).to eql %w[user one two three four]
-    end
-    it "returns id_keys" do
-      expect(subject.id_keys.map(&:name)).to eql %w[user one two three four]
-    end
     describe "#dom" do
+      subject{ field.dom }
+      it "returns name_keys" do
+        expect(subject.name_keys.map(&:name)).to eql %w[user one two three four]
+      end
+      it "returns id_keys" do
+        expect(subject.id_keys.map(&:name)).to eql %w[user one two three four]
+      end
       it "generates name" do
-        expect(subject.dom_name).to eql("user[one][two][three][four]")
+        expect(subject.name).to eql("user[one][two][three][four]")
       end
       it "generates id" do
-        expect(subject.dom_id).to eql("user_one_two_three_four")
+        expect(subject.id).to eql("user_one_two_three_four")
       end
     end
   end
@@ -69,51 +73,52 @@ RSpec.describe Phlex::Phorm::Field do
   describe "#values" do
     context "array of values" do
       let(:field) { form.collection(:nicknames).values.first }
-      subject{ field }
+      subject { field }
       it "returns value" do
         expect(subject.value).to eql "Dude"
       end
       it "returns name" do
         expect(subject.name).to be_nil
       end
-      it "returns name_keys" do
-        expect(subject.name_keys).to eql [:user, :nicknames, nil]
-      end
-      it "returns id_keys" do
-        expect(subject.id_keys).to eql [:user, :nicknames, 0]
-      end
       describe "#dom" do
+        subject { field.dom }
+        it "returns name_keys" do
+          expect(subject.name_keys).to eql [:user, :nicknames, nil]
+        end
+        it "returns id_keys" do
+          expect(subject.id_keys).to eql [:user, :nicknames, 0]
+        end
         it "generates name" do
-          expect(subject.dom_name).to eql("user[nicknames][]")
+          expect(subject.name).to eql("user[nicknames][]")
         end
         it "generates id" do
-          expect(subject.dom_id).to eql("user_nicknames_0")
+          expect(subject.id).to eql("user_nicknames_0")
         end
       end
     end
 
     context "array of objects" do
       let(:field) { form.collection(:addresses).values.first.field(:street) }
-      subject{ field }
+      subject { field }
       it "returns value" do
         expect(subject.value).to eql("Main St")
       end
       it "returns name" do
         expect(subject.name).to eql(:street)
       end
-      it "returns name_keys" do
-        expect(subject.name_keys).to eql [:user, :addresses, nil, :street]
-      end
-      it "returns id_keys" do
-        expect(subject.id_keys).to eql [:user, :addresses, 0, :street]
-      end
       describe "#dom" do
-        subject { field }
+        subject { field.dom }
+        it "returns name_keys" do
+          expect(subject.name_keys).to eql [:user, :addresses, nil, :street]
+        end
+        it "returns id_keys" do
+          expect(subject.id_keys).to eql [:user, :addresses, 0, :street]
+        end
         it "generates name" do
-          expect(subject.dom_name).to eql("user[addresses][][street]")
+          expect(subject.name).to eql("user[addresses][][street]")
         end
         it "generates id" do
-          expect(subject.dom_id).to eql("user_addresses_0_street")
+          expect(subject.id).to eql("user_addresses_0_street")
         end
       end
     end
