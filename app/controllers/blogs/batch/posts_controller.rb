@@ -23,7 +23,7 @@ class Blogs::Batch::PostsController < ApplicationController
           table.column do |column|
             column.item do |item|
               form.collection(:selected) do |selection|
-                render selection.field(value: item.id).input(type: :checkbox)
+                render selection.field(value: item.id).input(type: :checkbox, checked: @selection.selected?(item.id))
               end
             end
           end
@@ -45,7 +45,17 @@ class Blogs::Batch::PostsController < ApplicationController
               render form.field(:action, value: "unpublish").button
             end
             li do
-              show(@blog) { "Cancel selection" }
+              # This is cool ... if nothing is selected, we can let people
+              # bounce back out into the list. If sometuing is selected,
+              # they can "undo" it.
+              if @selection.selected?
+                render form.field(:action, value: "select_none").button
+              else
+                render form.field(:action, value: "select_all").button
+              end
+            end
+            li do
+              show(@blog) { "Back to Blog" }
             end
           end
         end
@@ -55,16 +65,26 @@ class Blogs::Batch::PostsController < ApplicationController
 
   def delete
     @selection.selected_items.delete_all
-    redirect_to action: :index
+    render phlex_action(:index), status: :created
   end
 
   def publish
     @selection.selected_items.update_all(publish_at: Time.current)
-    redirect_to action: :index
+    render phlex_action(:index), status: :created
   end
 
   def unpublish
     @selection.selected_items.update_all(publish_at: nil)
-    redirect_to action: :index
+    render phlex_action(:index), status: :created
+  end
+
+  def select_none
+    @selection.select_none
+    render phlex_action(:index), status: :created
+  end
+
+  def select_all
+    @selection.select_all
+    render phlex_action(:index), status: :created
   end
 end

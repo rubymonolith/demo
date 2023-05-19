@@ -13,6 +13,22 @@ module Batchable
       @selected ||= []
     end
 
+    def selected?(item = nil)
+      if item
+        selected.include? item.to_s
+      else
+        selected.any?
+      end
+    end
+
+    def select_none
+      self.selected = []
+    end
+
+    def select_all
+      self.selected = items.pluck(:id).map(&:to_s)
+    end
+
     def selected_items
       items.where(id: selected)
     end
