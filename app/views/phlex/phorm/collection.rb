@@ -26,6 +26,10 @@ module Phlex::Phorm
       @children.map(&:to_h)
     end
 
+    def permitted_keys
+      children.first&.permitted_keys || []
+    end
+
     def each(&)
       values.each(&)
     end

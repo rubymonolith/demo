@@ -181,7 +181,8 @@ RSpec.describe Phlex::Phorm::Field do
           { name: [:first, :last] },
           :email,
           { nicknames: [] },
-          { addresses: [:id, :street] }
+          { addresses: [:id, :street] },
+          { modulo: [:fizz, { buzz: [:saw] }]}
         ])
       end
     end
