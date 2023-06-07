@@ -124,7 +124,9 @@ RSpec.describe Phlex::Phorm::Field do
     end
   end
 
-  describe "#to_h" do
+  describe "mapping" do
+    subject { form.to_h }
+
     before do
       form.field(:name) do |name|
         name.field(:first, value: "Brad")
@@ -133,27 +135,21 @@ RSpec.describe Phlex::Phorm::Field do
       form.field(:email)
       form.collection(:nicknames)
       form.collection(:addresses).each do |address|
-        address.field(:id)
+        address.field(:id, permitted: false)
         address.field(:street)
       end
-      form.collection(:modulo) do |collection|
-        4.times do |i|
-          collection.append do |modulo|
-            if (i % 2 == 0)
-              modulo.field(:fizz, value: i)
-            else
-              modulo.field(:buzz) do |buzz|
-                buzz.field(:saw, value: i)
-              end
-            end
+      form.collection(:modulo, value: 4.times).each do |modulo|
+        if (modulo.value % 2 == 0)
+          modulo.field(:fizz, value: modulo.value)
+        else
+          modulo.field(:buzz) do |buzz|
+            buzz.field(:saw, value: modulo.value)
           end
         end
       end
     end
 
     describe "#to_h" do
-      subject { form.to_h }
-
       it do
         is_expected.to eql(
           name: { first: "Brad", last: "d" },
@@ -173,17 +169,50 @@ RSpec.describe Phlex::Phorm::Field do
       end
     end
 
-    describe "#permitted_keys" do
-      subject { form.permitted_keys }
+    describe "#assign" do
+      let(:params) do
+        {
+          email: "bard@example.com",
+          malicious_garbage: "haha! You will never win my pretty!",
+          addresses: [
+            {
+              id: 999,
+              street: "Lame Street"
+            },
+            {
+              id: 888,
+              street: "Bigsby Lane",
+              malicious_garbage: "I will steal your address!"
+            }
+          ],
+          modulo: [
+            { fizz: 200, malicious_garbage: "I will foil your plans!" },
+            { malicious_garbage: "The world will be mine!" }
+          ]
+        }
+      end
+      before { form.assign params }
 
-      it do
-        is_expected.to eql([
-          { name: [:first, :last] },
-          :email,
-          { nicknames: [] },
-          { addresses: [:id, :street] },
-          { modulo: [:fizz, { buzz: [:saw] }]}
-        ])
+      it "does not include fields not in list" do
+        expect(subject.keys).to_not include :malicious_garbage
+      end
+
+      it "includes fields in list" do
+        expect(form.to_h).to eql(
+          name: { first: "Brad", last: "d" },
+          nicknames: nil,
+          email: "bard@example.com",
+          addresses: [
+            { id: 100, street: "Lame Street" },
+            { id: 200, street: "Bigsby Lane" }
+          ],
+          modulo: [
+            { fizz: 200 },
+            { buzz: { saw: 1 }},
+            { fizz: 2 },
+            { buzz: { saw: 3 }}
+          ]
+        )
       end
     end
   end

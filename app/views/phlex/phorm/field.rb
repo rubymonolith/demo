@@ -1,13 +1,15 @@
 module Phlex::Phorm
   class Field
-    attr_reader :value, :parent, :children, :key, :dom
+    attr_reader :parent, :children, :key, :dom
+
+    attr_accessor :value
 
     def initialize(key = nil, value: nil, parent: nil, permitted: true)
       @key = key
       @parent = parent
       @children = []
       @value = value || parent_value
-      @permitted = true
+      @permitted = permitted
       @dom = DOM.new(field: self)
       yield self if block_given?
     end
@@ -20,8 +22,15 @@ module Phlex::Phorm
       @key unless @parent.is_a? Collection
     end
 
-    def permit(params)
-      params.require(@key).permit(*permitted_keys)
+    def assign(attributes)
+      @children.each do |child|
+        case value = attributes[child.key]
+        when Hash, Array
+          child.assign(value)
+        else
+          child.value = value if child.permitted?
+        end
+      end
     end
 
     def parents
@@ -138,20 +147,14 @@ module Phlex::Phorm
       add_child Field.new(key, parent: self, **kwargs), &
     end
 
-    def permitted_keys
-      children(&:permitted).map do |child|
-        if child.permitted_keys.any?
-          { child.key => child.permitted_keys }
-        else
-          child.key
-        end
+    def to_h
+      @children.each_with_object Hash.new do |child, hash|
+        hash[child.name] = child.children? ? child.to_h : child.value
       end
     end
 
-    def to_h
-      @children.each_with_object({}) do |f, h|
-        h[f.name] = f.children.any? ? f.to_h : f.value
-      end
+    def children?
+      @children.any?
     end
 
     private

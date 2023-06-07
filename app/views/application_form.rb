@@ -15,7 +15,7 @@ class ApplicationForm < Phlex::Phorm::Form
     end
   end
 
-  def form_row(field_name)
+  def form_row(field_name, **attributes)
     div do
       errors = @model.errors[field_name]
       label field(field_name)
