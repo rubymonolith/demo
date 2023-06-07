@@ -33,6 +33,11 @@ module Phlex::Phorm
       end
     end
 
+    def permit(params)
+      assign params.require(key)
+      to_h
+    end
+
     def parents
       field = self
       Enumerator.new do |y|
@@ -128,7 +133,7 @@ module Phlex::Phorm
     end
 
     def label(**attributes)
-      LabelComponent.new(field: self)
+      LabelComponent.new(field: self, attributes: attributes)
     end
 
     def textarea(**attributes)

@@ -2,7 +2,7 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, to: :@field
+    delegate :field, :collection, :permit, to: :@field
 
     def initialize(model, action: nil, method: nil)
       @model = model
@@ -29,11 +29,6 @@ module Phlex::Phorm
         type: "submit",
         value: value
       )
-    end
-
-    def permit(params)
-      @field.assign params.require(@field.key)
-      @field.to_h
     end
 
     protected
