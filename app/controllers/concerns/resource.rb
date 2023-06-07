@@ -37,7 +37,7 @@ module Resource
       # if there's an error I can just show the darn thing; if there's
       # not an error, then I can simply redirect. I'd somehow have to
       # deferr rendering.
-      render phlex_action(:new), status: :unprocessable_entity
+      render phlex_action(:edit), status: :unprocessable_entity
     end
   end
 
