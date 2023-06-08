@@ -77,7 +77,7 @@ module Phlex::Phorm
       end
 
       def field_value
-        @field.value.to_s
+        @field.value
       end
 
       def field_attributes
@@ -102,8 +102,8 @@ module Phlex::Phorm
     end
 
     class ButtonComponent < FieldComponent
-      def template(&)
-        button(**attributes) { field_value.titleize }
+      def template(&block)
+        button(**attributes) { field_value.to_s.titleize }
       end
 
       def field_attributes
@@ -121,7 +121,7 @@ module Phlex::Phorm
       end
 
       def field_type
-        case field.value
+        case field_value
         when URI
           "url"
         when Integer
