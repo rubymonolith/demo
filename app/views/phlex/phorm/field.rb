@@ -1,6 +1,6 @@
 module Phlex::Phorm
   class Field
-    attr_reader :parent, :children, :key, :dom
+    attr_reader :parent, :children, :key
 
     attr_accessor :value
 
@@ -55,112 +55,18 @@ module Phlex::Phorm
       @children.any?
     end
 
-    class FieldComponent < ApplicationComponent
-      attr_reader :field
-
-      def initialize(field:, attributes: {})
-        @field = field
-        @attributes = attributes
-        @dom = DOM.new(@field)
-      end
-
-      def field_name
-        @dom.name
-      end
-
-      def field_id
-        @dom.id
-      end
-
-      def field_title
-        @field.key.to_s.titleize
-      end
-
-      def field_value
-        @field.value
-      end
-
-      def field_attributes
-        {}
-      end
-
-      private
-
-      def attributes
-        field_attributes.merge(@attributes)
+    def self.register_component(tag, klass, alias: nil)
+      define_method tag do |**attributes|
+        klass.new(field: self, attributes: attributes)
       end
     end
 
-    class LabelComponent < FieldComponent
-      def template(&)
-        label(**attributes) { field_title }
-      end
+    include Components
 
-      def field_attributes
-        { for: field_id }
-      end
-    end
-
-    class ButtonComponent < FieldComponent
-      def template(&block)
-        button(**attributes) { field_value.to_s.titleize }
-      end
-
-      def field_attributes
-        { id: field_id, name: field_name, value: field_value }
-      end
-    end
-
-    class InputComponent < FieldComponent
-      def template(&)
-        input(**attributes)
-      end
-
-      def field_attributes
-        { id: field_id, name: field_name, value: field_value, type: field_type }
-      end
-
-      def field_type
-        case field_value
-        when URI
-          "url"
-        when Integer
-          "number"
-        when Date, DateTime
-          "date"
-        when Time
-          "time"
-        else
-          "text"
-        end
-      end
-    end
-
-    class TextareaComponent < FieldComponent
-      def template(&)
-        textarea(**attributes) { field_value }
-      end
-
-      def field_attributes
-        { id: field_id, name: field_name }
-      end
-    end
-
-    def input(**attributes)
-      InputComponent.new(field: self, attributes: attributes)
-    end
-
-    def label(**attributes)
-      LabelComponent.new(field: self, attributes: attributes)
-    end
-
-    def textarea(**attributes)
-      TextareaComponent.new(field: self, attributes: attributes)
-    end
-
-    def button(**attributes)
-      ButtonComponent.new(field: self, attributes: attributes)
-    end
+    register_component :input, InputComponent
+    register_component :label, LabelComponent
+    register_component :textarea, TextareaComponent
+    register_component :button, ButtonComponent
 
     private
 

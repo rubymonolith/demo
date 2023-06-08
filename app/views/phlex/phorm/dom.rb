@@ -14,6 +14,8 @@ module Phlex::Phorm
       field_id *id_keys
     end
 
+    private
+
     def id_keys
       parents.map(&:key).reverse.append(@field.key)
     end
@@ -21,8 +23,6 @@ module Phlex::Phorm
     def name_keys
       parents.map(&:name).reverse.append(@field.name)
     end
-
-    private
 
     def parents
       field = @field
