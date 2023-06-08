@@ -37,7 +37,7 @@ RSpec.describe Phlex::Phorm::Field do
       expect(subject.value).to eql "Brad"
     end
     describe "#dom" do
-      subject { field.dom }
+      subject { Phlex::Phorm::DOM.new(field) }
       it "generates name" do
         expect(subject.name).to eql("user[name]")
       end
@@ -54,7 +54,7 @@ RSpec.describe Phlex::Phorm::Field do
       expect(subject.value).to eql 5
     end
     describe "#dom" do
-      subject{ field.dom }
+      subject { Phlex::Phorm::DOM.new(field) }
       it "returns name_keys" do
         expect(subject.name_keys.map(&:name)).to eql %w[user one two three four]
       end
@@ -81,7 +81,7 @@ RSpec.describe Phlex::Phorm::Field do
         expect(subject.name).to be_nil
       end
       describe "#dom" do
-        subject { field.dom }
+        subject { Phlex::Phorm::DOM.new(field) }
         it "returns name_keys" do
           expect(subject.name_keys).to eql [:user, :nicknames, nil]
         end
@@ -107,7 +107,7 @@ RSpec.describe Phlex::Phorm::Field do
         expect(subject.name).to eql(:street)
       end
       describe "#dom" do
-        subject { field.dom }
+        subject { Phlex::Phorm::DOM.new(field) }
         it "returns name_keys" do
           expect(subject.name_keys).to eql [:user, :addresses, nil, :street]
         end

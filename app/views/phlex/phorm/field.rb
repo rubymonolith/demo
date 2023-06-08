@@ -10,7 +10,6 @@ module Phlex::Phorm
       @children = []
       @value = value || parent_value
       @permitted = permitted
-      @dom = DOM.new(field: self)
       yield self if block_given?
     end
 
@@ -38,15 +37,6 @@ module Phlex::Phorm
       to_h
     end
 
-    def parents
-      field = self
-      Enumerator.new do |y|
-        while field = field.parent
-          y << field
-        end
-      end
-    end
-
     def collection(key, **kwargs, &)
       add_child Collection.new(key, parent: self, **kwargs), &
     end
@@ -71,18 +61,19 @@ module Phlex::Phorm
       def initialize(field:, attributes: {})
         @field = field
         @attributes = attributes
+        @dom = DOM.new(@field)
       end
 
       def field_name
-        @field.dom.name
+        @dom.name
+      end
+
+      def field_id
+        @dom.id
       end
 
       def field_title
         @field.key.to_s.titleize
-      end
-
-      def field_id
-        @field.dom.id
       end
 
       def field_value

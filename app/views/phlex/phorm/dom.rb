@@ -2,7 +2,7 @@ module Phlex::Phorm
   class DOM
     include ActionView::Helpers::FormTagHelper
 
-    def initialize(field:)
+    def initialize(field)
       @field = field
     end
 
@@ -15,11 +15,22 @@ module Phlex::Phorm
     end
 
     def id_keys
-      @field.parents.map(&:key).reverse.append(@field.key)
+      parents.map(&:key).reverse.append(@field.key)
     end
 
     def name_keys
-      @field.parents.map(&:name).reverse.append(@field.name)
+      parents.map(&:name).reverse.append(@field.name)
+    end
+
+    private
+
+    def parents
+      field = @field
+      Enumerator.new do |y|
+        while field = field.parent
+          y << field
+        end
+      end
     end
   end
 end
