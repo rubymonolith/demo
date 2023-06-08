@@ -47,56 +47,90 @@ module Phlex::Phorm
       end
     end
 
-    class LabelComponent < ApplicationComponent
-      def initialize(field:, attributes: {})
-        @field = field
-        @attributes = attributes
-      end
+    def collection(key, **kwargs, &)
+      add_child Collection.new(key, parent: self, **kwargs), &
+    end
 
-      def template(&)
-        label(**attributes) do
-          @field.key.to_s.titleize
-        end
-      end
+    def field(key, **kwargs, &)
+      add_child Field.new(key, parent: self, **kwargs), &
+    end
 
-      def attributes
-        { for: @field.dom.id }.merge(@attributes)
+    def to_h
+      @children.each_with_object Hash.new do |child, hash|
+        hash[child.name] = child.children? ? child.to_h : child.value
       end
     end
 
-    class ButtonComponent < ApplicationComponent
+    def children?
+      @children.any?
+    end
+
+    class FieldComponent < ApplicationComponent
+      attr_reader :field
+
       def initialize(field:, attributes: {})
         @field = field
         @attributes = attributes
       end
 
-      def template(&)
-        button(**attributes) do
-          @field.value.to_s.titleize
-        end
+      def field_name
+        @field.dom.name
       end
 
+      def field_title
+        @field.key.to_s.titleize
+      end
+
+      def field_id
+        @field.dom.id
+      end
+
+      def field_value
+        @field.value.to_s
+      end
+
+      def field_attributes
+        {}
+      end
+
+      private
+
       def attributes
-        { id: @field.dom.id, name: @field.dom.name, value: @field.value.to_s }
+        field_attributes.merge(@attributes)
       end
     end
 
-    class InputComponent < ApplicationComponent
-      def initialize(field:, attributes: {})
-        @field = field
-        @attributes = attributes
-      end
-
+    class LabelComponent < FieldComponent
       def template(&)
-        input(**attributes.merge(@attributes))
+        label(**attributes) { field_title }
       end
 
-      def attributes
-        { id: @field.dom.id, name: @field.dom.name, value: @field.value.to_s, type: type }
+      def field_attributes
+        { for: field_id }
+      end
+    end
+
+    class ButtonComponent < FieldComponent
+      def template(&)
+        button(**attributes) { field_value.titleize }
       end
 
-      def type
-        case @field.value
+      def field_attributes
+        { id: field_id, name: field_name, value: field_value }
+      end
+    end
+
+    class InputComponent < FieldComponent
+      def template(&)
+        input(**attributes)
+      end
+
+      def field_attributes
+        { id: field_id, name: field_name, value: field_value, type: field_type }
+      end
+
+      def field_type
+        case field.value
         when URI
           "url"
         when Integer
@@ -111,20 +145,13 @@ module Phlex::Phorm
       end
     end
 
-    class TextareaComponent < ApplicationComponent
-      def initialize(field:, attributes: {})
-        @field = field
-        @attributes = attributes
-      end
-
+    class TextareaComponent < FieldComponent
       def template(&)
-        textarea(**attributes.merge(@attributes)) do
-          @field.value
-        end
+        textarea(**attributes) { field_value }
       end
 
-      def attributes
-        { id: @field.dom.id, name: @field.dom.name }
+      def field_attributes
+        { id: field_id, name: field_name }
       end
     end
 
@@ -142,24 +169,6 @@ module Phlex::Phorm
 
     def button(**attributes)
       ButtonComponent.new(field: self, attributes: attributes)
-    end
-
-    def collection(key, **kwargs, &)
-      add_child Collection.new(key, parent: self, **kwargs), &
-    end
-
-    def field(key, **kwargs, &)
-      add_child Field.new(key, parent: self, **kwargs), &
-    end
-
-    def to_h
-      @children.each_with_object Hash.new do |child, hash|
-        hash[child.name] = child.children? ? child.to_h : child.value
-      end
-    end
-
-    def children?
-      @children.any?
     end
 
     private
