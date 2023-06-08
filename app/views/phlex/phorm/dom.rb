@@ -14,6 +14,14 @@ module Phlex::Phorm
       field_id *id_keys
     end
 
+    def title
+      @field.key.to_s.titleize
+    end
+
+    def value
+      @field.value
+    end
+
     private
 
     def id_keys

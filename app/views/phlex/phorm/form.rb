@@ -4,6 +4,23 @@ module Phlex::Phorm
 
     delegate :field, :collection, :permit, to: :@field
 
+    # TODO: Overlay this stuff
+    Field = Phlex::Phorm::Field
+
+    def self.register_component(tag, class_constant)
+      Field.define_method tag do |**attributes|
+        class_constant.new(field: self, attributes: attributes)
+      end
+    end
+
+    prepend Components
+
+    register_component :input, InputComponent
+    register_component :label, LabelComponent
+    register_component :textarea, TextareaComponent
+    register_component :button, ButtonComponent
+    # // TODO: Overlay this stuff
+
     def initialize(model, action: nil, method: nil)
       @model = model
       @action = action

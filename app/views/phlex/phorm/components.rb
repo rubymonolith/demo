@@ -1,70 +1,81 @@
 module Phlex::Phorm::Components
-  class FieldComponent < ApplicationComponent
+  class TagComponent < ApplicationComponent
     attr_reader :field
 
-    def initialize(field:, attributes: {})
+    delegate \
+        :name,
+        :id,
+        :title,
+        :value,
+      to: :@dom,
+      prefix: :field
+
+    def initialize(field:, tag: self.class.tag, attributes: {})
       @field = field
+      @tag = tag
       @attributes = attributes
       @dom = Phlex::Phorm::DOM.new(@field)
     end
 
-    def field_name
-      @dom.name
+    protected
+
+    def attributes
+      attribute_methods.each_with_object(Hash.new) do |attribute, hash|
+        hash[attribute] = self.send(attribute)
+      end.merge(@attributes)
     end
 
-    def field_id
-      @dom.id
+    def around_template(&)
+      tag(**attributes) { super }
     end
 
-    def field_title
-      @field.key.to_s.titleize
+    def template
+      nil
     end
 
-    def field_value
-      @field.value
+    def self.tag(name = nil)
+      @tag ||= name
     end
 
-    def field_attributes
-      {}
+    protected
+
+    def tag(...)
+      self.send(@tag, ...)
     end
 
     private
 
-    def attributes
-      field_attributes.merge(@attributes)
+    def attribute_methods
+      public_methods(false) - [ :call, :template, :content, :attributes, :initialize ]
     end
   end
 
-  class LabelComponent < FieldComponent
-    def template(&)
-      label(**attributes) { field_title }
-    end
+  class LabelComponent < TagComponent
+    tag :label
 
-    def field_attributes
-      { for: field_id }
-    end
+    def template = plain field_title
+
+    def for = field_id
+    def name = "hi"
   end
 
-  class ButtonComponent < FieldComponent
-    def template(&block)
-      button(**attributes) { field_value.to_s.titleize }
-    end
+  class ButtonComponent < TagComponent
+    tag :button
 
-    def field_attributes
-      { id: field_id, name: field_name, value: field_value }
-    end
+    def template = plain field_value.to_s.titleize
+
+    def id = field_id
+    def name = field_name
+    def value = field_value
   end
 
-  class InputComponent < FieldComponent
-    def template(&)
-      input(**attributes)
-    end
+  class InputComponent < TagComponent
+    tag :input
 
-    def field_attributes
-      { id: field_id, name: field_name, value: field_value, type: field_type }
-    end
-
-    def field_type
+    def id = field_id
+    def name = field_name
+    def value = field_value
+    def type
       case field_value
       when URI
         "url"
@@ -80,13 +91,12 @@ module Phlex::Phorm::Components
     end
   end
 
-  class TextareaComponent < FieldComponent
-    def template(&)
-      textarea(**attributes) { field_value }
-    end
+  class TextareaComponent < TagComponent
+    tag :textarea
 
-    def field_attributes
-      { id: field_id, name: field_name }
-    end
+    def template = plain field_value
+
+    def id = field_id
+    def name = field_name
   end
 end
