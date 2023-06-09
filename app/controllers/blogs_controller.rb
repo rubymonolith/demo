@@ -1,6 +1,14 @@
 class BlogsController < ApplicationController
   resources :blogs, from: :current_user
 
+  class Form < ApplicationForm
+    def template
+      input_field :title
+
+      submit
+    end
+  end
+
   class Show < ApplicationView
     attr_writer :blog, :current_user
 
@@ -44,13 +52,6 @@ class BlogsController < ApplicationController
         table.column("Owner") { show(_1.user, :name) }
       end
       create(@current_user.blogs, role: "button")
-    end
-  end
-
-  class Form < ApplicationForm
-    def template
-      input_field :title
-      submit
     end
   end
 
