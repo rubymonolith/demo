@@ -71,9 +71,7 @@ group :test do
   gem "webdrivers"
 end
 
-gem "phlex-rails"#, path: "~/Projects/phlex-ruby/phlex-rails"
-gem "phlex", github: "bradgessler/phlex", branch: "polymorphic-tags-jump-the-shark"
-# gem "phlex", path: "~/Projects/phlex-ruby/phlex"
+gem "phlex-rails"
 gem "oxidizer", "~> 0.1.0", github: "rocketshipio/oxidizer"
 
 # gem "oxidizer", path: "~/Projects/rocketshipio/oxidizer"

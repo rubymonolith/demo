@@ -21,7 +21,7 @@ module Phlex::Phorm::Components
     end
 
     def field_value
-      @field.value
+      @field.value.to_s
     end
 
     def field_attributes
@@ -65,7 +65,7 @@ module Phlex::Phorm::Components
     end
 
     def field_type
-      case field_value
+      case field.value
       when URI
         "url"
       when Integer
