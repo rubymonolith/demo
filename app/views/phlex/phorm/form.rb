@@ -2,7 +2,7 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, :permit, to: :@field
+    delegate :field, :collection, :permit, :key, to: :@field
 
     def initialize(model, action: nil, method: nil)
       @model = model
