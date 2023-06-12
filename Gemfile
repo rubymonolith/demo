@@ -80,3 +80,4 @@ gem "dockerfile-rails", ">= 1.2", :group => :development
 gem "inputomatic", "~> 0.1.1"
 
 gem "rspec-rails", "~> 6.0"
+gem "litestack"

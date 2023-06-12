@@ -117,6 +117,9 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    litestack (0.2.3)
+      oj
+      sqlite3
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -147,6 +150,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.15.2-x86_64-linux)
       racc (~> 1.4)
+    oj (3.15.0)
     phlex (1.8.1)
       concurrent-ruby (~> 1.2)
       erb (>= 4)
@@ -267,6 +271,7 @@ DEPENDENCIES
   importmap-rails
   inputomatic (~> 0.1.1)
   jbuilder
+  litestack
   oxidizer (~> 0.1.0)!
   phlex-rails
   puma (~> 5.0)
