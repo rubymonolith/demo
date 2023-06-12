@@ -11,6 +11,8 @@ module Resourcerer
     config.autoload_paths << "#{root}/app/views"
     config.autoload_paths << "#{root}/app/views/layouts"
     config.autoload_paths << "#{root}/app/views/components"
+    config.autoload_paths << "#{root}/lib/generators"
+
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 7.0
 
