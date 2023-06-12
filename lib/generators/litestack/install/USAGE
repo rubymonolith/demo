@@ -1,0 +1,8 @@
+Description:
+    Installs litestack gem and configures the project to use litestack.
+
+Example:
+    bin/rails generate litestack:install
+
+    This will create:
+        what/will/it/create
