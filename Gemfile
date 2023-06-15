@@ -80,4 +80,9 @@ gem "dockerfile-rails", ">= 1.2", :group => :development
 gem "inputomatic", "~> 0.1.1"
 
 gem "rspec-rails", "~> 6.0"
-gem "litestack"
+
+if litestack_path = ENV["LITESTACK_GEM_PATH"]
+  gem "litestack", path: litestack_path
+else
+  gem "litestack", github: "bradgessler/litestack"
+end

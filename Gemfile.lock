@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/bradgessler/litestack.git
+  revision: af0547d1df91627de2964acc39eb4b024184a049
+  specs:
+    litestack (0.2.3)
+      oj
+      sqlite3
+
+GIT
   remote: https://github.com/rocketshipio/oxidizer.git
   revision: fe600852c4f47a1faf0d392476a71b0ee4fb0042
   specs:
@@ -79,7 +87,7 @@ GEM
     bootsnap (1.16.0)
       msgpack (~> 1.2)
     builder (3.2.4)
-    capybara (3.39.1)
+    capybara (3.39.2)
       addressable
       matrix
       mini_mime (>= 0.1.3)
@@ -117,9 +125,6 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
-    litestack (0.2.3)
-      oj
-      sqlite3
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -134,7 +139,7 @@ GEM
     mini_mime (1.1.2)
     minitest (5.18.0)
     msgpack (1.7.1)
-    net-imap (0.3.4)
+    net-imap (0.3.6)
       date
       net-protocol
     net-pop (0.1.2)
@@ -162,7 +167,7 @@ GEM
     public_suffix (5.0.1)
     puma (5.6.5)
       nio4r (~> 2.0)
-    racc (1.7.0)
+    racc (1.7.1)
     rack (2.2.7)
     rack-test (2.1.0)
       rack (>= 1.3)
@@ -195,7 +200,7 @@ GEM
       zeitwerk (~> 2.5)
     rake (13.0.6)
     redis (4.8.1)
-    regexp_parser (2.8.0)
+    regexp_parser (2.8.1)
     reline (0.3.5)
       io-console (~> 0.5)
     rexml (3.2.5)
@@ -271,7 +276,7 @@ DEPENDENCIES
   importmap-rails
   inputomatic (~> 0.1.1)
   jbuilder
-  litestack
+  litestack!
   oxidizer (~> 0.1.0)!
   phlex-rails
   puma (~> 5.0)
