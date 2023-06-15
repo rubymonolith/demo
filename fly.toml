@@ -41,3 +41,7 @@ kill_timeout = "5s"
 [[statics]]
   guest_path = "/rails/public"
   url_prefix = "/"
+
+[mounts]
+  source="oxidizer_demo_litestack_data"
+  destination="/data"

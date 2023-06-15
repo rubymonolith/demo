@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/bradgessler/litestack.git
-  revision: af0547d1df91627de2964acc39eb4b024184a049
+  revision: 9f874bbe785333cfd4fa866f918f269bbe8fbc27
   specs:
     litestack (0.2.3)
       oj
