@@ -2,13 +2,19 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, :permit, :key, to: :@field
+    delegate :field, :fields, :collection, :permit, :key, to: :@field
+
+    Field = Class.new(Phlex::Phorm::Field)
+
+    def self.field(tag, component:)
+      self::Field.register_component component, tag: tag
+    end
 
     def initialize(model, action: nil, method: nil)
       @model = model
       @action = action
       @method = method
-      @field = Field.new(model.model_name.param_key, value: model)
+      @field = self.class::Field.new(model.model_name.param_key, value: model)
     end
 
     def around_template(&)

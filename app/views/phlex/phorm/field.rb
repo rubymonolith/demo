@@ -42,7 +42,11 @@ module Phlex::Phorm
     end
 
     def field(key, **kwargs, &)
-      add_child Field.new(key, parent: self, **kwargs), &
+      add_child self.class.new(key, parent: self, **kwargs), &
+    end
+
+    def fields(*keys, **kwargs)
+      keys.map { |key| field(key, **kwargs) }
     end
 
     def to_h
@@ -55,18 +59,11 @@ module Phlex::Phorm
       @children.any?
     end
 
-    def self.register_component(tag, klass, alias: nil)
-      define_method tag do |**attributes|
-        klass.new(field: self, attributes: attributes)
+    def self.register_component(component_class, tag:)
+      self.define_method tag do |**attributes|
+        component_class.new(field: self, attributes: attributes)
       end
     end
-
-    include Components
-
-    register_component :input, InputComponent
-    register_component :label, LabelComponent
-    register_component :textarea, TextareaComponent
-    register_component :button, ButtonComponent
 
     private
 

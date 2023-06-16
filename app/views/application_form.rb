@@ -1,27 +1,24 @@
 # frozen_string_literal: true
 
 class ApplicationForm < Phlex::Phorm::Form
-  def input_field(field_name, **attributes)
-    form_row(field_name) do
-      render field(field_name).input(**attributes)
+  include Phlex::Phorm::Components
+
+  field :input, component: InputComponent
+  field :textarea, component: TextareaComponent
+  field :label, component: LabelComponent
+  field :button, component: ButtonComponent
+
+  class LabeledInputComponent < FieldComponent
+    def template
+      label { field.name.to_s.titleize }
+      input(id: field_id)
     end
   end
 
-  def textarea_field(field_name, **attributes)
-    form_row(field_name) do
-      render field(field_name).textarea(**attributes)
-    end
-  end
+  field :labled_input, component: LabeledInputComponent
 
-  def form_row(field_name, **attributes)
-    div do
-      errors = @model.errors[field_name]
-      render field(field_name).label
-      attributes.merge!(aria_invalid: "true") if errors.any?
-      yield
-      if errors.any?
-        small { "#{field_name.to_s.capitalize} #{errors.to_sentence}" }
-      end
-    end
+  def labeled(component)
+    render component.field.label
+    render component
   end
 end
