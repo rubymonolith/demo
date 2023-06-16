@@ -22,11 +22,17 @@ RSpec.describe Phlex::Phorm::Field do
 
   describe "root" do
     subject { form }
-    it "has name" do
-      expect(form.name).to eql(:user)
+    it "has key" do
+      expect(form.key).to eql(:user)
     end
     it "has value" do
       expect(form.value).to eql(user)
+    end
+    it "generates name" do
+      expect(form.name).to eql("user")
+    end
+    it "generates id" do
+      expect(form.id).to eql("user")
     end
   end
 
@@ -36,14 +42,11 @@ RSpec.describe Phlex::Phorm::Field do
     it "returns value from parent" do
       expect(subject.value).to eql "Brad"
     end
-    describe "#dom" do
-      subject { Phlex::Phorm::DOM.new(field) }
-      it "generates name" do
-        expect(subject.name).to eql("user[name]")
-      end
-      it "generates id" do
-        expect(subject.id).to eql("user_name")
-      end
+    it "generates name" do
+      expect(subject.name).to eql("user[name]")
+    end
+    it "generates id" do
+      expect(subject.id).to eql("user_name")
     end
   end
 
@@ -53,20 +56,11 @@ RSpec.describe Phlex::Phorm::Field do
     it "returns value" do
       expect(subject.value).to eql 5
     end
-    describe "#dom" do
-      subject { Phlex::Phorm::DOM.new(field) }
-      it "returns name_keys" do
-        expect(subject.name_keys.map(&:name)).to eql %w[user one two three four]
-      end
-      it "returns id_keys" do
-        expect(subject.id_keys.map(&:name)).to eql %w[user one two three four]
-      end
-      it "generates name" do
-        expect(subject.name).to eql("user[one][two][three][four]")
-      end
-      it "generates id" do
-        expect(subject.id).to eql("user_one_two_three_four")
-      end
+    it "generates name" do
+      expect(subject.name).to eql("user[one][two][three][four]")
+    end
+    it "generates id" do
+      expect(subject.id).to eql("user_one_two_three_four")
     end
   end
 
@@ -77,23 +71,14 @@ RSpec.describe Phlex::Phorm::Field do
       it "returns value" do
         expect(subject.value).to eql "Dude"
       end
-      it "returns name" do
-        expect(subject.name).to be_nil
+      it "returns key" do
+        expect(subject.key).to eql 0
       end
-      describe "#dom" do
-        subject { Phlex::Phorm::DOM.new(field) }
-        it "returns name_keys" do
-          expect(subject.name_keys).to eql [:user, :nicknames, nil]
-        end
-        it "returns id_keys" do
-          expect(subject.id_keys).to eql [:user, :nicknames, 0]
-        end
-        it "generates name" do
-          expect(subject.name).to eql("user[nicknames][]")
-        end
-        it "generates id" do
-          expect(subject.id).to eql("user_nicknames_0")
-        end
+      it "generates name" do
+        expect(subject.name).to eql("user[nicknames][]")
+      end
+      it "generates id" do
+        expect(subject.id).to eql("user_nicknames_0")
       end
     end
 
@@ -103,23 +88,14 @@ RSpec.describe Phlex::Phorm::Field do
       it "returns value" do
         expect(subject.value).to eql("Main St")
       end
-      it "returns name" do
-        expect(subject.name).to eql(:street)
+      it "returns key" do
+        expect(subject.key).to eql(:street)
       end
-      describe "#dom" do
-        subject { Phlex::Phorm::DOM.new(field) }
-        it "returns name_keys" do
-          expect(subject.name_keys).to eql [:user, :addresses, nil, :street]
-        end
-        it "returns id_keys" do
-          expect(subject.id_keys).to eql [:user, :addresses, 0, :street]
-        end
-        it "generates name" do
-          expect(subject.name).to eql("user[addresses][][street]")
-        end
-        it "generates id" do
-          expect(subject.id).to eql("user_addresses_0_street")
-        end
+      it "generates name" do
+        expect(subject.name).to eql("user[addresses][][street]")
+      end
+      it "generates id" do
+        expect(subject.id).to eql("user_addresses_0_street")
       end
     end
   end

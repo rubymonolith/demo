@@ -1,8 +1,10 @@
 module Phlex::Phorm
   class Field
-    attr_reader :parent, :children, :key
+    attr_reader :parent, :children, :key, :dom
 
     attr_accessor :value
+
+    delegate :name, :id, to: :dom
 
     def initialize(key = nil, value: nil, parent: nil, permitted: true)
       @key = key
@@ -10,15 +12,13 @@ module Phlex::Phorm
       @children = []
       @value = value || parent_value
       @permitted = permitted
+      @dom = DOM.new(self)
+
       yield self if block_given?
     end
 
     def permitted?
       @permitted
-    end
-
-    def name
-      @key unless @parent.is_a? Collection
     end
 
     def assign(attributes)
@@ -37,12 +37,12 @@ module Phlex::Phorm
       to_h
     end
 
-    def collection(key, **kwargs, &)
-      add_child Collection.new(key, parent: self, **kwargs), &
+    def collection(key, **kwargs)
+      add_child Collection.new(key, parent: self, **kwargs)
     end
 
     def field(key, **kwargs, &)
-      add_child self.class.new(key, parent: self, **kwargs), &
+      add_child Field.new(key, parent: self, **kwargs), &
     end
 
     def fields(*keys, **kwargs)
@@ -51,7 +51,7 @@ module Phlex::Phorm
 
     def to_h
       @children.each_with_object Hash.new do |child, hash|
-        hash[child.name] = child.children? ? child.to_h : child.value
+        hash[child.key] = child.children? ? child.to_h : child.value
       end
     end
 

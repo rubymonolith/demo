@@ -7,21 +7,27 @@ module Phlex::Phorm
     end
 
     def name
+      return @field.key.to_s if root?
       field_name *name_keys
     end
 
     def id
+      return @field.key.to_s if root?
       field_id *id_keys
     end
 
     private
 
     def id_keys
-      parents.map(&:key).reverse.append(@field.key)
+      lineage.map(&:key)
     end
 
     def name_keys
-      parents.map(&:name).reverse.append(@field.name)
+      lineage.map { |field| field.key unless field.parent.is_a? Collection }
+    end
+
+    def lineage
+      parents.to_a.reverse.append(@field)
     end
 
     def parents
@@ -31,6 +37,10 @@ module Phlex::Phorm
           y << field
         end
       end
+    end
+
+    def root?
+      !@field.parent
     end
   end
 end

@@ -7,6 +7,12 @@ module Phlex::Phorm
       super(...)
     end
 
+    def field(**kwargs, &)
+      super(@index, **kwargs, &).tap do
+        @index += 1
+      end
+    end
+
     def values
       Enumerator.new do |y|
         @value.each do |value|
@@ -15,23 +21,12 @@ module Phlex::Phorm
       end
     end
 
-    def field(**kwargs, &block)
-      super(@index, **kwargs, &block).tap do
-        @index += 1
-      end
+    def each(&)
+      values.each(&)
     end
-    alias :append :field
 
     def to_h
       @children.map(&:to_h)
-    end
-
-    def permitted_keys
-      children.first&.permitted_keys || []
-    end
-
-    def each(&)
-      values.each(&)
     end
   end
 end
