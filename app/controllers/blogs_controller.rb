@@ -3,7 +3,7 @@ class BlogsController < ApplicationController
 
   class Form < ApplicationForm
     def template
-      input_field :title
+      labeled field(:title).input
 
       submit
     end

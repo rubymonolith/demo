@@ -3,8 +3,8 @@ class UsersController < ApplicationController
 
   class Form < ApplicationForm
     def template(&)
-      input_field :name
-      input_field :email
+      labeled field(:name).input
+      labeled field(:email).input
       submit
     end
   end

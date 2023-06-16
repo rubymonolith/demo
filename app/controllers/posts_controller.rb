@@ -4,7 +4,7 @@ class PostsController < ApplicationController
   class Form < ApplicationForm
     def template
       fields(:title, :publish_at).each do |field|
-        labeled field.labled_input
+        labeled field.input
       end
       labeled field(:content).textarea(rows: 6)
 
