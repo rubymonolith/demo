@@ -45,10 +45,6 @@ module Phlex::Phorm
       add_child field_class.new(key, parent: self, **kwargs), &
     end
 
-    def fields(*keys, **kwargs)
-      keys.map { |key| field(key, **kwargs) }
-    end
-
     def to_h
       @children.each_with_object Hash.new do |child, hash|
         hash[child.key] = child.children? ? child.to_h : child.value

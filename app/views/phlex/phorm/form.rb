@@ -2,25 +2,48 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :fields, :collection, :permit, :key, to: :@field
+    delegate :permit, :key, to: :@field
+    delegate :field, :fields, :collection, to: :@field_components
 
-    class Field < Field
+    class FieldComponents
+      attr_accessor :field
+
+      def initialize(field)
+        @field = field
+      end
+
       include Components
 
       def button(**attributes)
-        ButtonComponent.new(field: self, attributes: attributes)
+        Components::ButtonComponent.new(field: @field, attributes: attributes)
       end
 
       def input(**attributes)
-        InputComponent.new(field: self, attributes: attributes)
+        Components::InputComponent.new(field: @field, attributes: attributes)
       end
 
       def label(**attributes)
-        LabelComponent.new(field: self, attributes: attributes)
+        Components::LabelComponent.new(field: @field, attributes: attributes)
       end
 
       def textarea(**attributes)
-        TextareaComponent.new(field: self, attributes: attributes)
+        Components::TextareaComponent.new(field: @field, attributes: attributes)
+      end
+
+      def field(*args, **kwargs, &)
+        self.class.new(@field.field(*args, **kwargs)).tap do |components|
+          yield components if block_given?
+        end
+      end
+
+      def fields(*keys, **kwargs)
+        keys.map { |key| field(key, **kwargs) }
+      end
+
+      def collection(*args, **kwargs, &)
+        self.class.new(@field.collection(*args, **kwargs)).tap do |components|
+          yield components if block_given?
+        end
       end
     end
 
@@ -28,7 +51,8 @@ module Phlex::Phorm
       @model = model
       @action = action
       @method = method
-      @field = self.class::Field.new(model.model_name.param_key, value: model)
+      @field = Field.new(model.model_name.param_key, value: model)
+      @field_components = FieldComponents.new @field
     end
 
     def around_template(&)
