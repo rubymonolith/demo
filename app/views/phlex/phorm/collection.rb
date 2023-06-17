@@ -28,11 +28,5 @@ module Phlex::Phorm
     def to_h
       @children.map(&:to_h)
     end
-
-    private
-
-    def field_class
-      parent.class
-    end
   end
 end

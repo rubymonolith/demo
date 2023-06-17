@@ -4,9 +4,10 @@ class PostsController < ApplicationController
   class Form < ApplicationForm
     def template
       fields(:title, :publish_at).each do |field|
-        render field.input
+        labeled field.input
       end
-      render field(:content).textarea(rows: 6)
+
+      labeled field(:content).textarea(rows: 6)
 
       submit
     end

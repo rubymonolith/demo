@@ -4,15 +4,12 @@ module Phlex::Phorm
 
     attr_accessor :value
 
-    delegate :name, :id, to: :dom
-
     def initialize(key = nil, value: nil, parent: nil, permitted: true)
       @key = key
       @parent = parent
       @children = []
       @value = value || parent_value
       @permitted = permitted
-      @dom = DOM.new(self)
 
       yield self if block_given?
     end
@@ -42,7 +39,7 @@ module Phlex::Phorm
     end
 
     def field(key, **kwargs, &)
-      add_child field_class.new(key, parent: self, **kwargs), &
+      add_child self.class.new(key, parent: self, **kwargs), &
     end
 
     def to_h
@@ -56,10 +53,6 @@ module Phlex::Phorm
     end
 
     private
-
-    def field_class
-      self.class
-    end
 
     def parent_value
       @parent.value.send @key if @key and @parent and @parent.value and @parent.value.respond_to? @key

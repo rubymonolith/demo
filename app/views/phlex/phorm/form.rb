@@ -23,12 +23,12 @@ module Phlex::Phorm
       end
     end
 
-    def initialize(model, action: nil, method: nil)
+    def initialize(model, action: nil, method: nil, field: self.class::Field)
       @model = model
       @action = action
       @method = method
       @parameter = Parameter.new(model.model_name.param_key, value: model)
-      @field = Field.new @parameter
+      @field = field.new @parameter
     end
 
     def around_template(&)

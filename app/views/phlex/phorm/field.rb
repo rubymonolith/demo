@@ -6,19 +6,25 @@ module Phlex::Phorm
       @parameter = parameter
     end
 
-    def field(*args, **kwargs, &)
-      self.class.new(@parameter.field(*args, **kwargs)).tap do |components|
-        yield components if block_given?
-      end
+    def field(key = nil, *args, **kwargs, &)
+      parameter = key.is_a?(Parameter) ? key : @parameter.field(key, *args, **kwargs)
+      build_field parameter, &
+    end
+
+    def collection(key = nil, *args, **kwargs, &)
+      parameter = key.is_a?(Collection) ? key : @parameter.collection(key, *args, **kwargs)
+      build_field parameter, &
     end
 
     def fields(*keys, **kwargs)
       keys.map { |key| field(key, **kwargs) }
     end
 
-    def collection(*args, **kwargs, &)
-      self.class.new(@parameter.collection(*args, **kwargs)).tap do |components|
-        yield components if block_given?
+    private
+
+    def build_field(parameter)
+      self.class.new(parameter).tap do |field|
+        yield field if block_given?
       end
     end
   end
