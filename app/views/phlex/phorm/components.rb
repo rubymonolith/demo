@@ -5,23 +5,6 @@ module Phlex::Phorm::Components
     def initialize(field:, attributes: {})
       @field = field
       @attributes = attributes
-      @dom = Phlex::Phorm::DOM.new(@field)
-    end
-
-    def field_name
-      @dom.name
-    end
-
-    def field_id
-      @dom.id
-    end
-
-    def field_title
-      @field.key.to_s.titleize
-    end
-
-    def field_value
-      @field.value.to_s
     end
 
     def field_attributes
@@ -37,21 +20,21 @@ module Phlex::Phorm::Components
 
   class LabelComponent < FieldComponent
     def template(&)
-      label(**attributes) { field_title }
+      label(**attributes) { field.key.to_s.titleize }
     end
 
     def field_attributes
-      { for: field_id }
+      { for: field.id }
     end
   end
 
   class ButtonComponent < FieldComponent
     def template(&block)
-      button(**attributes) { field_value.to_s.titleize }
+      button(**attributes) { field.value.to_s.to_s.titleize }
     end
 
     def field_attributes
-      { id: field_id, name: field_name, value: field_value }
+      { id: field.id, name: field.name, value: field.value.to_s }
     end
   end
 
@@ -61,7 +44,7 @@ module Phlex::Phorm::Components
     end
 
     def field_attributes
-      { id: field_id, name: field_name, value: field_value, type: field_type }
+      { id: field.id, name: field.name, value: field.value.to_s, type: field_type }
     end
 
     def field_type
@@ -82,11 +65,11 @@ module Phlex::Phorm::Components
 
   class TextareaComponent < FieldComponent
     def template(&)
-      textarea(**attributes) { field_value }
+      textarea(**attributes) { field.value.to_s }
     end
 
     def field_attributes
-      { id: field_id, name: field_name }
+      { id: field.id, name: field.name }
     end
   end
 end

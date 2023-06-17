@@ -3,19 +3,18 @@
 class ApplicationForm < Phlex::Phorm::Form
   include Phlex::Phorm::Components
 
-  field :input, component: InputComponent
-  field :textarea, component: TextareaComponent
-  field :label, component: LabelComponent
-  field :button, component: ButtonComponent
-
   class LabeledInputComponent < FieldComponent
     def template
-      label { field.name.to_s.titleize }
-      input(id: field_id)
+      label { field.key.to_s.titleize }
+      input(id: field.id)
     end
   end
 
-  field :labled_input, component: LabeledInputComponent
+  class Field < Field
+    def labeled_input(**attributes)
+      LabeledInputComponent.new(field: self, attributes: attributes)
+    end
+  end
 
   def labeled(component)
     render component.field.label

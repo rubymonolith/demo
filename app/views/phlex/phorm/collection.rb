@@ -8,9 +8,9 @@ module Phlex::Phorm
     end
 
     def field(**kwargs, &)
-      super(@index, **kwargs, &).tap do
-        @index += 1
-      end
+      super(@index, **kwargs, &)
+    ensure
+      @index += 1
     end
 
     def values
@@ -27,6 +27,12 @@ module Phlex::Phorm
 
     def to_h
       @children.map(&:to_h)
+    end
+
+    private
+
+    def field_class
+      parent.class
     end
   end
 end

@@ -42,7 +42,7 @@ module Phlex::Phorm
     end
 
     def field(key, **kwargs, &)
-      add_child Field.new(key, parent: self, **kwargs), &
+      add_child field_class.new(key, parent: self, **kwargs), &
     end
 
     def fields(*keys, **kwargs)
@@ -59,13 +59,11 @@ module Phlex::Phorm
       @children.any?
     end
 
-    def self.register_component(component_class, tag:)
-      self.define_method tag do |**attributes|
-        component_class.new(field: self, attributes: attributes)
-      end
-    end
-
     private
+
+    def field_class
+      self.class
+    end
 
     def parent_value
       @parent.value.send @key if @key and @parent and @parent.value and @parent.value.respond_to? @key

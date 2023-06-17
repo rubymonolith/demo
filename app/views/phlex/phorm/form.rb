@@ -4,10 +4,24 @@ module Phlex::Phorm
 
     delegate :field, :fields, :collection, :permit, :key, to: :@field
 
-    Field = Class.new(Phlex::Phorm::Field)
+    class Field < Field
+      include Components
 
-    def self.field(tag, component:)
-      self::Field.register_component component, tag: tag
+      def button(**attributes)
+        ButtonComponent.new(field: self, attributes: attributes)
+      end
+
+      def input(**attributes)
+        InputComponent.new(field: self, attributes: attributes)
+      end
+
+      def label(**attributes)
+        LabelComponent.new(field: self, attributes: attributes)
+      end
+
+      def textarea(**attributes)
+        TextareaComponent.new(field: self, attributes: attributes)
+      end
     end
 
     def initialize(model, action: nil, method: nil)
