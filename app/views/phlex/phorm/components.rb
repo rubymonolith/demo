@@ -1,9 +1,9 @@
 module Phlex::Phorm::Components
   class FieldComponent < ApplicationComponent
-    attr_reader :field
+    attr_reader :parameter
 
-    def initialize(field:, attributes: {})
-      @field = field
+    def initialize(parameter, attributes: {})
+      @parameter = parameter
       @attributes = attributes
     end
 
@@ -20,21 +20,21 @@ module Phlex::Phorm::Components
 
   class LabelComponent < FieldComponent
     def template(&)
-      label(**attributes) { field.key.to_s.titleize }
+      label(**attributes) { parameter.key.to_s.titleize }
     end
 
     def field_attributes
-      { for: field.id }
+      { for: parameter.id }
     end
   end
 
   class ButtonComponent < FieldComponent
     def template(&block)
-      button(**attributes) { field.value.to_s.to_s.titleize }
+      button(**attributes) { parameter.value.to_s.to_s.titleize }
     end
 
     def field_attributes
-      { id: field.id, name: field.name, value: field.value.to_s }
+      { id: parameter.id, name: parameter.name, value: parameter.value.to_s }
     end
   end
 
@@ -44,11 +44,11 @@ module Phlex::Phorm::Components
     end
 
     def field_attributes
-      { id: field.id, name: field.name, value: field.value.to_s, type: field_type }
+      { id: parameter.id, name: parameter.name, value: parameter.value.to_s, type: parameter_type }
     end
 
-    def field_type
-      case field.value
+    def parameter_type
+      case parameter.value
       when URI
         "url"
       when Integer
@@ -65,11 +65,11 @@ module Phlex::Phorm::Components
 
   class TextareaComponent < FieldComponent
     def template(&)
-      textarea(**attributes) { field.value.to_s }
+      textarea(**attributes) { parameter.value.to_s }
     end
 
     def field_attributes
-      { id: field.id, name: field.name }
+      { id: parameter.id, name: parameter.name }
     end
   end
 end

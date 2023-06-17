@@ -1,5 +1,5 @@
 module Phlex::Phorm
-  class Collection < Field
+  class Collection < Parameter
     include Enumerable
 
     def initialize(...)

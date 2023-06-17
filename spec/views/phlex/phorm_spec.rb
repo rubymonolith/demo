@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Phlex::Phorm::Field do
+RSpec.describe Phlex::Phorm::Parameter do
   User = Data.define(:name, :email, :nicknames, :addresses)
   Address = Data.define(:id, :street, :city)
 
@@ -17,7 +17,7 @@ RSpec.describe Phlex::Phorm::Field do
   end
 
   let(:form) do
-    Phlex::Phorm::Field.new(:user, value: user)
+    Phlex::Phorm::Parameter.new(:user, value: user)
   end
 
   describe "root" do

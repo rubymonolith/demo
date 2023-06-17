@@ -2,48 +2,24 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :permit, :key, to: :@field
-    delegate :field, :fields, :collection, to: :@field_components
+    delegate :permit, :key, to: :@parameter
+    delegate :field, :fields, :collection, to: :@field
 
-    class FieldComponents
-      attr_accessor :field
-
-      def initialize(field)
-        @field = field
-      end
-
-      include Components
-
+    class Field < Field
       def button(**attributes)
-        Components::ButtonComponent.new(field: @field, attributes: attributes)
+        Components::ButtonComponent.new(parameter, attributes: attributes)
       end
 
       def input(**attributes)
-        Components::InputComponent.new(field: @field, attributes: attributes)
+        Components::InputComponent.new(parameter, attributes: attributes)
       end
 
       def label(**attributes)
-        Components::LabelComponent.new(field: @field, attributes: attributes)
+        Components::LabelComponent.new(parameter, attributes: attributes)
       end
 
       def textarea(**attributes)
-        Components::TextareaComponent.new(field: @field, attributes: attributes)
-      end
-
-      def field(*args, **kwargs, &)
-        self.class.new(@field.field(*args, **kwargs)).tap do |components|
-          yield components if block_given?
-        end
-      end
-
-      def fields(*keys, **kwargs)
-        keys.map { |key| field(key, **kwargs) }
-      end
-
-      def collection(*args, **kwargs, &)
-        self.class.new(@field.collection(*args, **kwargs)).tap do |components|
-          yield components if block_given?
-        end
+        Components::TextareaComponent.new(parameter, attributes: attributes)
       end
     end
 
@@ -51,8 +27,8 @@ module Phlex::Phorm
       @model = model
       @action = action
       @method = method
-      @field = Field.new(model.model_name.param_key, value: model)
-      @field_components = FieldComponents.new @field
+      @parameter = Parameter.new(model.model_name.param_key, value: model)
+      @field = Field.new @parameter
     end
 
     def around_template(&)
