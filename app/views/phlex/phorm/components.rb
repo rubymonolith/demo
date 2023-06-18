@@ -12,6 +12,11 @@ module Phlex::Phorm::Components
       {}
     end
 
+    def focus(value = true)
+      @attributes[:autofocus] = value
+      self
+    end
+
     private
 
     def attributes

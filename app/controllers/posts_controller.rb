@@ -3,10 +3,8 @@ class PostsController < ApplicationController
 
   class Form < ApplicationForm
     def template
-      fields(:title, :publish_at).each do |field|
-        labeled field.input
-      end
-
+      labeled field(:title).input.focus
+      labeled field(:publish_at).input
       labeled field(:content).textarea(rows: 6)
 
       submit

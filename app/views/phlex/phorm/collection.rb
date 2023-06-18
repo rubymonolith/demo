@@ -7,13 +7,7 @@ module Phlex::Phorm
       super(...)
     end
 
-    def field(**kwargs, &)
-      super(@index, **kwargs, &)
-    ensure
-      @index += 1
-    end
-
-    def values
+    def fields
       Enumerator.new do |y|
         @value.each do |value|
           y << field(value: value)
@@ -21,8 +15,14 @@ module Phlex::Phorm
       end
     end
 
+    def field(**kwargs, &)
+      super(@index, **kwargs, &)
+    ensure
+      @index += 1
+    end
+
     def each(&)
-      values.each(&)
+      fields.each(&)
     end
 
     def to_h

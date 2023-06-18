@@ -2,18 +2,31 @@ module Phlex::Phorm
   class Field
     attr_accessor :parameter
 
+    include Enumerable
+
+    def each(&)
+      parameter.each { |parameter| build_field parameter }
+    end
+
     def initialize(parameter)
       @parameter = parameter
     end
 
     def field(key = nil, *args, **kwargs, &)
-      parameter = key.is_a?(Parameter) ? key : @parameter.field(key, *args, **kwargs)
+      parameter = if key.is_a?(Parameter)
+        key
+      elsif key.present?
+        @parameter.field(key, *args, **kwargs)
+      else
+        @parameter.field(*args, **kwargs)
+      end
+
       build_field parameter, &
     end
 
     def collection(key = nil, *args, **kwargs, &)
-      parameter = key.is_a?(Collection) ? key : @parameter.collection(key, *args, **kwargs)
-      build_field parameter, &
+      collection = key.is_a?(Collection) ? key : @parameter.collection(key, *args, **kwargs)
+      build_field collection, &
     end
 
     def fields(*keys, **kwargs)
