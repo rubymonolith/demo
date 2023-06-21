@@ -8,6 +8,7 @@ module Phlex::Phorm
       @key = key
       @children = []
       @schema = schema
+      @parent = parent
       @block = block
     end
 
@@ -18,6 +19,12 @@ module Phlex::Phorm
     def assign(array)
       array.each.with_index do |value, index|
         @children.append build_namespace(index).tap { |template| template.assign value }
+      end
+    end
+
+    def field(value: nil)
+      Field.new(@children.size, parent: self, value: value).tap do |field|
+        @children.append field
       end
     end
 

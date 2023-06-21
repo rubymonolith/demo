@@ -14,7 +14,7 @@ module Resource
   end
 
   def create
-    @resource.assign_attributes form_params(:new).require(resource_name)
+    @resource.assign_attributes params.require(resource_name).permit(unrendered_phlex_action(:new).forms.first.schema.keys)
 
     if @resource.save
       redirect_to @resource
@@ -28,7 +28,7 @@ module Resource
   end
 
   def update
-    @resource.assign_attributes form_params(:edit).require(resource_name)
+    @resource.assign_attributes params.require(resource_name).permit(unrendered_phlex_action(:edit).forms.first.schema.keys)
 
     if @resource.save
       redirect_to @resource
@@ -67,7 +67,7 @@ module Resource
 
   def form_params(action)
     unrendered_phlex_action(action).forms.each_with_object ActionController::Parameters.new do |form, hash|
-      hash[form.key.to_sym] = form.permit(params)
+      hash[form.key.to_sym] = form.assign(params.require(form.key)).to_h
     end.permit!
   end
 

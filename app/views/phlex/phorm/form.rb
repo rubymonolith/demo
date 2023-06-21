@@ -2,7 +2,8 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :permit, :key, :field, :collection, :namespace, to: :@view
+    delegate :field, :collection, :namespace, to: :@view
+    delegate :key, :schema, :assign, to: :@namespace
 
     class View
       def initialize(namespace)
@@ -39,8 +40,8 @@ module Phlex::Phorm
 
       private
 
-      def wrap(namespace)
-        self.class.new(namespace).tap { |view| yield view if block_given? }
+      def wrap(namespace, &block)
+        self.class.new(namespace).tap { |view| block.call view if block }
       end
     end
 
