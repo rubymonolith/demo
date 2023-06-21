@@ -4,12 +4,13 @@ module Phlex::Phorm
 
     attr_reader :key, :parent
 
-    def initialize(key, schema:, parent:, &block)
+    def initialize(key, schema:, parent:, object: [], &block)
       @key = key
       @children = []
       @parent = parent
       @schema = schema
       @block = block
+      self.assign object
     end
 
     def each(&)

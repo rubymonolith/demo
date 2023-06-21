@@ -49,7 +49,7 @@ module Phlex::Phorm
       @model = model
       @action = action
       @method = method
-      @namespace = Namespace.new(model.model_name.param_key)
+      @namespace = Namespace.new(model.model_name.param_key, object: @model)
       @builder = Builder.new(namespace: @namespace)
     end
 
