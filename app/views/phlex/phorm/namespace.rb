@@ -6,18 +6,21 @@ module Phlex::Phorm
 
     def initialize(key, schema: nil, parent: nil)
       @key = key
-      @children = []
+      @children = Hash.new
       @schema = schema || Schema.new(key)
       @parent = parent
       yield self if block_given?
     end
 
     def namespace(key, permit: true, &)
+      return @children[key] if @children.key? key
+
       schema = @schema.permit(key, permit: permit)
       append_child Namespace.new(key, schema: schema, parent: self, &)
     end
 
     def collection(key, permit: true, &)
+      return @children[key] if @children.key? key
       schema = @schema.permit(key, permit: permit)
       append_child Collection.new(key, schema: schema, parent: self, &)
     end
@@ -28,7 +31,7 @@ module Phlex::Phorm
     end
 
     def each(&)
-      @children.each(&)
+      @children.values.each(&)
     end
 
     def assign(hash)
@@ -47,7 +50,7 @@ module Phlex::Phorm
     private
 
     def append_child(field)
-      @children.append field
+      @children[field.key] = field
       field
     end
   end

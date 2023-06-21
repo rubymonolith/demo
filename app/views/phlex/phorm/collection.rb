@@ -7,8 +7,8 @@ module Phlex::Phorm
     def initialize(key, schema:, parent:, &block)
       @key = key
       @children = []
-      @schema = schema
       @parent = parent
+      @schema = schema
       @block = block
     end
 
@@ -17,9 +17,15 @@ module Phlex::Phorm
     end
 
     def assign(array)
-      array.each.with_index do |value, index|
-        @children.append build_namespace(index).tap { |template| template.assign value }
-      end
+      array.each { |value| index_namespace(&@block).assign value }
+    end
+
+    def namespace(...)
+      index_namespace.tap { |namespace| namespace.namespace(...) }
+    end
+
+    def collection(...)
+      index_namespace.collection(...)
     end
 
     def field(value: nil)
@@ -34,8 +40,10 @@ module Phlex::Phorm
 
     private
 
-    def build_namespace(key, value: nil)
-      Namespace.new(key, schema: @schema, parent: self, &@block)
+    def index_namespace(&block)
+      Namespace.new(@children.size, parent: self, schema: @schema, &block).tap do |namespace|
+        @children.append namespace
+      end
     end
   end
 end
