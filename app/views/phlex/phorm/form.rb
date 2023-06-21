@@ -2,33 +2,54 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :permit, :key, to: :@parameter
-    delegate :field, :fields, :collection, to: :@field
+    delegate :permit, :key, :field, :collection, :namespace, to: :@view
 
-    class Field < Field
+    class View
+      def initialize(namespace)
+        @namespace = namespace
+      end
+
+      def field(*args, **kwargs, &)
+        wrap @namespace.field(*args, **kwargs), &
+      end
+
+      def namespace(*args, **kwargs, &)
+        wrap @namespace.namespace(*args, **kwargs), &
+      end
+
+      def collection(*args, **kwargs, &)
+        wrap @namespace.collection(*args, **kwargs), &
+      end
+
       def button(**attributes)
-        Components::ButtonComponent.new(parameter, attributes: attributes)
+        Components::ButtonComponent.new(@namespace, attributes: attributes)
       end
 
       def input(**attributes)
-        Components::InputComponent.new(parameter, attributes: attributes)
+        Components::InputComponent.new(@namespace, attributes: attributes)
       end
 
       def label(**attributes)
-        Components::LabelComponent.new(parameter, attributes: attributes)
+        Components::LabelComponent.new(@namespace, attributes: attributes)
       end
 
       def textarea(**attributes)
-        Components::TextareaComponent.new(parameter, attributes: attributes)
+        Components::TextareaComponent.new(@namespace, attributes: attributes)
+      end
+
+      private
+
+      def wrap(namespace)
+        self.class.new(namespace).tap { |view| yield view if block_given? }
       end
     end
 
-    def initialize(model, action: nil, method: nil, field: self.class::Field)
+    def initialize(model, action: nil, method: nil)
       @model = model
       @action = action
       @method = method
-      @parameter = Parameter.new(model.model_name.param_key, value: model)
-      @field = field.new @parameter
+      @namespace = Namespace.new(model.model_name.param_key)
+      @view = View.new(@namespace)
     end
 
     def around_template(&)

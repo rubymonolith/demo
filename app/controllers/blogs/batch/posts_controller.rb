@@ -33,10 +33,6 @@ class Blogs::Batch::PostsController < ApplicationController
           table.column("Publish Date")  { _1.publish_at&.to_formatted_s(:long) }
         end
 
-        form.collection(:selected).each do |selection|
-          render selection.field(value: item.id).input(type: :checkbox)
-        end
-
         nav do
           ul do
             li do

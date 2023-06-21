@@ -2,26 +2,26 @@ module Phlex::Phorm
   class DOM
     include ActionView::Helpers::FormTagHelper
 
-    def initialize(field)
-      @field = field
+    def initialize(namespace)
+      @namespace = namespace
     end
 
     def name
-      return @field.key.to_s if root?
+      return @namespace.key.to_s if root?
       field_name *name_keys
     end
 
     def id
-      return @field.key.to_s if root?
+      return @namespace.key.to_s if root?
       field_id *id_keys
     end
 
     def key
-      @field.key.to_s
+      @namespace.key.to_s
     end
 
     def value
-      @field.value.to_s
+      @namespace.value.to_s
     end
 
     def title
@@ -35,24 +35,24 @@ module Phlex::Phorm
     end
 
     def name_keys
-      lineage.map { |field| field.key unless field.parent.is_a? Collection }
+      lineage.map { |namespace| namespace.key unless namespace.parent.is_a? Collection }
     end
 
     def lineage
-      parents.to_a.reverse.append(@field)
+      parents.to_a.reverse.append(@namespace)
     end
 
     def parents
-      field = @field
+      namespace = @namespace
       Enumerator.new do |y|
-        while field = field.parent
-          y << field
+        while namespace = namespace.parent
+          y << namespace
         end
       end
     end
 
     def root?
-      !@field.parent
+      !@namespace.parent
     end
   end
 end

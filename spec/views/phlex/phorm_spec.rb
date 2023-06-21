@@ -92,7 +92,7 @@ RSpec.describe Phlex::Phorm::Parameter do
 
   describe "#values" do
     context "array of values" do
-      let(:field) { form.collection(:nicknames).values.first }
+      let(:field) { form.collection(:nicknames).first }
       subject { field }
       it "returns value" do
         expect(subject.value).to eql "Dude"
@@ -119,7 +119,7 @@ RSpec.describe Phlex::Phorm::Parameter do
     end
 
     context "array of objects" do
-      let(:field) { form.collection(:addresses).values.first.field(:street) }
+      let(:field) { form.collection(:addresses).first.field(:street) }
       subject { field }
       it "returns value" do
         expect(subject.value).to eql("Main St")
@@ -156,11 +156,11 @@ RSpec.describe Phlex::Phorm::Parameter do
       end
       form.field(:email)
       form.collection(:nicknames)
-      form.collection(:addresses).each do |address|
+      form.collection(:addresses) do |address|
         address.field(:id, permitted: false)
         address.field(:street)
       end
-      form.collection(:modulo, value: 4.times).each do |modulo|
+      form.collection(:modulo, value: 4.times) do |modulo|
         if (modulo.value % 2 == 0)
           modulo.field(:fizz, value: modulo.value)
         else
@@ -175,7 +175,7 @@ RSpec.describe Phlex::Phorm::Parameter do
       it do
         is_expected.to eql(
           name: { first: "Brad", last: "d" },
-          nicknames: user.nicknames,
+          nicknames: ["Dude", "The Dude"],
           email: "brad@example.com",
           addresses: [
             { id: 100, street: "Main St" },
@@ -196,15 +196,22 @@ RSpec.describe Phlex::Phorm::Parameter do
         {
           email: "bard@example.com",
           malicious_garbage: "haha! You will never win my pretty!",
+          nicknames: nil,
           addresses: [
             {
               id: 999,
-              street: "Lame Street"
+              street: "Lame Street",
+              extra_garbage: "Super garbage"
             },
             {
               id: 888,
               street: "Bigsby Lane",
               malicious_garbage: "I will steal your address!"
+            },
+            {
+              id: 777,
+              street: "Amazing Avenue",
+              lots_of_trash: "I will steal your address!"
             }
           ],
           modulo: [
@@ -226,7 +233,8 @@ RSpec.describe Phlex::Phorm::Parameter do
           email: "bard@example.com",
           addresses: [
             { id: 100, street: "Lame Street" },
-            { id: 200, street: "Bigsby Lane" }
+            { id: 200, street: "Bigsby Lane" },
+            { id: 777, street: "Amazing Avenue" }
           ],
           modulo: [
             { fizz: 200 },

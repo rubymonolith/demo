@@ -1,11 +1,11 @@
 module Phlex::Phorm::Components
   class FieldComponent < ApplicationComponent
-    attr_reader :parameter, :dom
+    attr_reader :namespace, :dom
 
-    def initialize(parameter, attributes: {})
-      @parameter = parameter
+    def initialize(namespace, attributes: {})
+      @namespace = namespace
       @attributes = attributes
-      @dom = Phlex::Phorm::DOM.new(parameter)
+      @dom = Phlex::Phorm::DOM.new(namespace)
     end
 
     def field_attributes
@@ -54,7 +54,7 @@ module Phlex::Phorm::Components
     end
 
     def type
-      case parameter.value
+      case namespace.value
       when URI
         "url"
       when Integer

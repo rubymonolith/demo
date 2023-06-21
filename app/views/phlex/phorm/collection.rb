@@ -1,32 +1,34 @@
 module Phlex::Phorm
-  class Collection < Parameter
+  class Collection
     include Enumerable
 
-    def initialize(...)
-      @index = 0
-      super(...)
-    end
+    attr_reader :key, :parent
 
-    def fields
-      Enumerator.new do |y|
-        @value.each do |value|
-          y << field(value: value)
-        end
-      end
-    end
-
-    def field(**kwargs, &)
-      super(@index, **kwargs, &)
-    ensure
-      @index += 1
+    def initialize(key, schema:, parent:, &block)
+      @key = key
+      @children = []
+      @schema = schema
+      @block = block
     end
 
     def each(&)
-      fields.each(&)
+      @children.each(&)
     end
 
-    def to_h
-      @children.map(&:to_h)
+    def assign(array)
+      array.each.with_index do |value, index|
+        @children.append build_namespace(index).tap { |template| template.assign value }
+      end
+    end
+
+    def serialize
+      map(&:serialize)
+    end
+
+    private
+
+    def build_namespace(key, value: nil)
+      Namespace.new(key, schema: @schema, parent: self, &@block)
     end
   end
 end
