@@ -2,11 +2,11 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, :namespace, to: :@view
-    delegate :key, :schema, :assign, to: :@namespace
+    delegate :field, :collection, :namespace, to: :@builder
+    delegate :key, :schema, :assign, :serialize, to: :@namespace
 
-    class View
-      def initialize(namespace)
+    class Builder
+      def initialize(namespace:)
         @namespace = namespace
       end
 
@@ -41,7 +41,7 @@ module Phlex::Phorm
       private
 
       def wrap(namespace, &block)
-        self.class.new(namespace).tap { |view| block.call view if block }
+        self.class.new(namespace: namespace).tap { |view| block.call view if block }
       end
     end
 
@@ -50,7 +50,7 @@ module Phlex::Phorm
       @action = action
       @method = method
       @namespace = Namespace.new(model.model_name.param_key)
-      @view = View.new(@namespace)
+      @builder = Builder.new(namespace: @namespace)
     end
 
     def around_template(&)

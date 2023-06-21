@@ -16,7 +16,7 @@ class ApplicationForm < Phlex::Phorm::Form
   # end
 
   def labeled(component)
-    render View.new(component.namespace).label
+    render Builder.new(namespace: component.namespace).label
     render component
   end
 end

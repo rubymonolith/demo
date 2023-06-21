@@ -21,11 +21,14 @@ module Phlex::Phorm
 
     def collection(key, permit: true, &)
       return @children[key] if @children.key? key
+
       schema = @schema.permit(key, permit: permit)
       append_child Collection.new(key, schema: schema, parent: self, &)
     end
 
     def field(key, permit: true, value: nil, &)
+      return @children[key] if @children.key? key
+
       @schema.permit(key, permit: permit)
       append_child Field.new(key, parent: self, value: value, &)
     end

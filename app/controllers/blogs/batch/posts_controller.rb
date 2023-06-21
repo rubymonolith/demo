@@ -44,22 +44,19 @@ class Blogs::Batch::PostsController < ApplicationController
         nav do
           ul do
             li do
-              render form.field(:action, value: "delete").button
+              render form.field(:action).button(value: "delete")
             end
             li do
-              render form.field(:action, value: "publish").button
+              render form.field(:action).button(value: "publish")
             end
             li do
-              render form.field(:action, value: "unpublish").button
+              render form.field(:action).button(value: "unpublish")
             end
             li do
-              # This is cool ... if nothing is selected, we can let people
-              # bounce back out into the list. If sometuing is selected,
-              # they can "undo" it.
               if @selection.selected?
-                render form.field(:action, value: "select_none").button
+                render form.field(:action).button(value: "select_none")
               else
-                render form.field(:action, value: "select_all").button
+                render form.field(:action).button(value: "select_all")
               end
             end
             li do

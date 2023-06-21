@@ -36,7 +36,11 @@ module Phlex::Phorm::Components
 
   class ButtonComponent < FieldComponent
     def template(&block)
-      button(**attributes) { dom.value.titleize }
+      button(**attributes) { button_text }
+    end
+
+    def button_text
+      @attributes.fetch(:value, dom.value).titleize
     end
 
     def field_attributes
