@@ -2,46 +2,38 @@ module Phlex::Phorm
   class Form < Phlex::HTML
     attr_reader :model
 
-    delegate :field, :collection, :namespace, to: :@builder
-    delegate :key, :schema, :assign, :serialize, to: :@namespace
+    delegate \
+        :field,
+        :collection,
+        :namespace,
+        :key,
+        :schema,
+        :assign,
+        :serialize,
+      to: :@namespace
 
-    class Builder
-      def initialize(namespace:)
-        @namespace = namespace
-      end
+    # Extend Namespace to add components to render namespaces
+    Namespace = Class.new(Phlex::Phorm::Namespace)
 
-      def field(*args, **kwargs, &)
-        wrap @namespace.field(*args, **kwargs), &
-      end
+    # Extend Collection to add components to render collections.
+    Collection = Class.new(Phlex::Phorm::Collection)
 
-      def namespace(*args, **kwargs, &)
-        wrap @namespace.namespace(*args, **kwargs), &
-      end
-
-      def collection(*args, **kwargs, &)
-        wrap @namespace.collection(*args, **kwargs), &
-      end
-
+    # Extend Field to add components to render fields.
+    class Field < Phlex::Phorm::Field
       def button(**attributes)
-        Components::ButtonComponent.new(@namespace, attributes: attributes)
+        Components::ButtonComponent.new(self, attributes: attributes)
       end
 
       def input(**attributes)
-        Components::InputComponent.new(@namespace, attributes: attributes)
+        Components::InputComponent.new(self, attributes: attributes)
       end
 
       def label(**attributes)
-        Components::LabelComponent.new(@namespace, attributes: attributes)
+        Components::LabelComponent.new(self, attributes: attributes)
       end
 
       def textarea(**attributes)
-        Components::TextareaComponent.new(@namespace, attributes: attributes)
-      end
-
-      private
-
-      def wrap(namespace, &block)
-        self.class.new(namespace: namespace).tap { |view| block.call view if block }
+        Components::TextareaComponent.new(self, attributes: attributes)
       end
     end
 
@@ -49,8 +41,8 @@ module Phlex::Phorm
       @model = model
       @action = action
       @method = method
-      @namespace = Namespace.new(model.model_name.param_key, object: @model)
-      @builder = Builder.new(namespace: @namespace)
+      @builder = Builder.from self.class
+      @namespace = @builder.namespace(model.model_name.param_key, object: @model)
     end
 
     def around_template(&)

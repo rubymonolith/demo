@@ -1,22 +1,20 @@
 # frozen_string_literal: true
 
 class ApplicationForm < Phlex::Phorm::Form
-  include Phlex::Phorm::Components
+  class LabelField < Phlex::Phorm::Components::FieldComponent
+    def template
+      label(**attributes) { strong { dom.title } }
+    end
+  end
 
-  # class Field < Field
-  #   class LabelField < Phlex::Phorm::Components::FieldComponent
-  #     def template
-  #       label(**attributes) { strong { dom.title } }
-  #     end
-  #   end
-
-  #   def label(**attributes)
-  #     LabelField.new(parameter, attributes: attributes)
-  #   end
-  # end
+  class Field < Field
+    def label(**attributes)
+      LabelField.new(self, attributes: attributes)
+    end
+  end
 
   def labeled(component)
-    render Builder.new(namespace: component.namespace).label
+    render component.namespace.label
     render component
   end
 end

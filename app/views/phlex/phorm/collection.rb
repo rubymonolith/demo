@@ -4,12 +4,13 @@ module Phlex::Phorm
 
     attr_reader :key, :parent
 
-    def initialize(key, schema:, parent:, object: [], &block)
+    def initialize(key, schema:, parent:, object: [], builder:, &block)
       @key = key
       @children = []
       @parent = parent
       @schema = schema
       @block = block
+      @builder = builder
       self.assign object
     end
 
@@ -30,7 +31,7 @@ module Phlex::Phorm
     end
 
     def field(value: nil)
-      Field.new(@children.size, parent: self, value: value).tap do |field|
+      @builder.field(@children.size, parent: self, value: value).tap do |field|
         @children.append field
       end
     end
@@ -42,7 +43,7 @@ module Phlex::Phorm
     private
 
     def index_namespace(&block)
-      Namespace.new(@children.size, parent: self, schema: @schema, &block).tap do |namespace|
+      @builder.namespace(@children.size, parent: self, schema: @schema, &block).tap do |namespace|
         @children.append namespace
       end
     end

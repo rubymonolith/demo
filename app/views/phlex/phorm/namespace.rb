@@ -4,12 +4,13 @@ module Phlex::Phorm
 
     attr_reader :key, :schema, :parent
 
-    def initialize(key, schema: nil, parent: nil, object: nil)
+    def initialize(key, schema: nil, parent: nil, object: nil, builder: Builder.new)
       @key = key
       @children = Hash.new
       @schema = schema || Schema.new(key)
       @parent = parent
       @object = object
+      @builder = builder
 
       yield self if block_given?
     end
@@ -19,7 +20,7 @@ module Phlex::Phorm
       object ||= @object.send(key) if @object.respond_to? key
       schema = @schema.permit(key, permit: permit)
 
-      append_child Namespace.new(key, schema: schema, parent: self, object: object, &)
+      append_child @builder.namespace(key, schema: schema, parent: self, object: object, &)
     end
 
     def collection(key, permit: true, object: nil, &)
@@ -27,7 +28,7 @@ module Phlex::Phorm
       object ||= @object.send(key) if @object.respond_to? key
       schema = @schema.permit(key, permit: permit)
 
-      append_child Collection.new(key, schema: schema, parent: self, object: object, &)
+      append_child @builder.collection(key, schema: schema, parent: self, object: object, &)
     end
 
     def field(key, permit: true, value: nil, &)
@@ -35,7 +36,7 @@ module Phlex::Phorm
       value ||= @object.send(key) if @object.respond_to? key
       @schema.permit(key, permit: permit)
 
-      append_child Field.new(key, parent: self, value: value, &)
+      append_child @builder.field(key, parent: self, value: value, &)
     end
 
     def each(&)

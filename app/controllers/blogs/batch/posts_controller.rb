@@ -22,17 +22,7 @@ class Blogs::Batch::PostsController < ApplicationController
         render TableComponent.new(items: @selection.items) do |table|
           table.column do |column|
             column.item do |item|
-              form.collection(:selected) do |selection|
-                # selection.namespace :spartan do |spartan|
-                #   render spartan.field(:bulldog, value: true).input
-                # end
-                # selection.collection :even_more do |funston|
-                #   10.times do |n|
-                #     render funston.field(value: n).input
-                #   end
-                # end
-                render selection.field(value: item.id).input(type: :checkbox, checked: @selection.selected?(item.id))
-              end
+              render form.collection(:selected).field(value: item.id).input(type: :checkbox, checked: @selection.selected?(item.id))
             end
           end
           table.column("Title")         { show(_1, :title) }
