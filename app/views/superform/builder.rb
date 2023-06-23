@@ -1,6 +1,6 @@
-module Phlex::Phorm
+module Superform
   class Builder
-    def initialize(field: Phlex::Phorms::Field, namespace: Phlex::Phorms::Namespace, collection: Phlex::Phorms::Collection)
+    def initialize(field: Superform::Field, namespace: Superform::Namespace, collection: Superform::Collection)
       @field = field
       @namespace = namespace
       @collection = collection
@@ -18,8 +18,8 @@ module Phlex::Phorm
       @collection.new(*args, builder: self, **kwargs, &)
     end
 
-    def self.from(object)
-      new field: object::Field, namespace: object::Namespace, collection: object::Collection
+    def self.from(constant)
+      new field: constant::Field, namespace: constant::Namespace, collection: constant::Collection
     end
   end
 end

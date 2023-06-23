@@ -1,4 +1,4 @@
-module Phlex::Phorm
+module Superform
   class Collection
     include Enumerable
 
@@ -11,7 +11,6 @@ module Phlex::Phorm
       @schema = schema
       @block = block
       @builder = builder
-      self.assign object
     end
 
     def each(&)

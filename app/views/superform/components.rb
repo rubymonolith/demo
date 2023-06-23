@@ -1,11 +1,11 @@
-module Phlex::Phorm::Components
+module Superform::Components
   class FieldComponent < ApplicationComponent
     attr_reader :namespace, :dom
 
     def initialize(namespace, attributes: {})
       @namespace = namespace
       @attributes = attributes
-      @dom = Phlex::Phorm::DOM.new(namespace)
+      @dom = Superform::DOM.new(namespace)
     end
 
     def field_attributes

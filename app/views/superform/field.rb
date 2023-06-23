@@ -1,4 +1,4 @@
-module Phlex::Phorm
+module Superform
   class Field
     attr_accessor :value, :key, :parent
 

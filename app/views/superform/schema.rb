@@ -1,4 +1,4 @@
-module Phlex::Phorm
+module Superform
   class Schema
     include Enumerable
 

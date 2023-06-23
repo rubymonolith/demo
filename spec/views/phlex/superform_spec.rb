@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Phlex::Phorm::Parameter do
+RSpec.describe Superform::Namespace do
   User = Data.define(:name, :email, :nicknames, :addresses)
   Address = Data.define(:id, :street, :city)
 
@@ -17,7 +17,7 @@ RSpec.describe Phlex::Phorm::Parameter do
   end
 
   let(:form) do
-    Phlex::Phorm::Parameter.new(:user, value: user)
+    Superform::Namespace.new(:user, object: user)
   end
 
   describe "root" do
@@ -26,10 +26,10 @@ RSpec.describe Phlex::Phorm::Parameter do
       expect(form.key).to eql(:user)
     end
     it "has value" do
-      expect(form.value).to eql(user)
+      expect(form.object).to eql(user)
     end
     context "DOM" do
-      let(:dom) { Phlex::Phorm::DOM.new(form) }
+      let(:dom) { Superform::DOM.new(form) }
       it "has name" do
         expect(dom.name).to eql("user")
       end
@@ -49,7 +49,7 @@ RSpec.describe Phlex::Phorm::Parameter do
       expect(subject.value).to eql "Brad"
     end
     context "DOM" do
-      let(:dom) { Phlex::Phorm::DOM.new(field) }
+      let(:dom) { Superform::DOM.new(field) }
 
       it "has name" do
         expect(dom.name).to eql("user[name]")
@@ -67,13 +67,13 @@ RSpec.describe Phlex::Phorm::Parameter do
   end
 
   describe "#field" do
-    let(:field) { form.field(:one).field(:two).field(:three).field(:four, value: 5) }
+    let(:field) { form.namespace(:one).namespace(:two).namespace(:three).field(:four, value: 5) }
     subject{ field }
     it "returns value" do
       expect(subject.value).to eql 5
     end
     context "DOM" do
-      let(:dom) { Phlex::Phorm::DOM.new(field) }
+      let(:dom) { Superform::DOM.new(field) }
 
       it "has name" do
         expect(dom.name).to eql("user[one][two][three][four]")
@@ -101,7 +101,7 @@ RSpec.describe Phlex::Phorm::Parameter do
         expect(subject.key).to eql 0
       end
       context "DOM" do
-        let(:dom) { Phlex::Phorm::DOM.new(field) }
+        let(:dom) { Superform::DOM.new(field) }
 
         it "has name" do
           expect(dom.name).to eql("user[nicknames][]")
@@ -128,7 +128,7 @@ RSpec.describe Phlex::Phorm::Parameter do
         expect(subject.key).to eql(:street)
       end
       context "DOM" do
-        let(:dom) { Phlex::Phorm::DOM.new(field) }
+        let(:dom) { Superform::DOM.new(field) }
 
         it "has name" do
           expect(dom.name).to eql("user[addresses][][street]")
@@ -157,7 +157,7 @@ RSpec.describe Phlex::Phorm::Parameter do
       form.field(:email)
       form.collection(:nicknames)
       form.collection(:addresses) do |address|
-        address.field(:id, permitted: false)
+        address.field(:id, permit: false)
         address.field(:street)
       end
       form.collection(:modulo, value: 4.times) do |modulo|

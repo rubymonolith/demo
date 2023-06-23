@@ -1,4 +1,4 @@
-module Phlex::Phorm
+module Superform
   class Form < Phlex::HTML
     attr_reader :model
 
@@ -13,13 +13,13 @@ module Phlex::Phorm
       to: :@namespace
 
     # Extend Namespace to add components to render namespaces
-    Namespace = Class.new(Phlex::Phorm::Namespace)
+    Namespace = Class.new(Superform::Namespace)
 
     # Extend Collection to add components to render collections.
-    Collection = Class.new(Phlex::Phorm::Collection)
+    Collection = Class.new(Superform::Collection)
 
     # Extend Field to add components to render fields.
-    class Field < Phlex::Phorm::Field
+    class Field < Superform::Field
       def button(**attributes)
         Components::ButtonComponent.new(self, attributes: attributes)
       end

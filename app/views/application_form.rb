@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class ApplicationForm < Phlex::Phorm::Form
-  class LabelField < Phlex::Phorm::Components::FieldComponent
+class ApplicationForm < Superform::Form
+  class LabelField < Superform::Components::FieldComponent
     def template
       label(**attributes) { strong { dom.title } }
     end
