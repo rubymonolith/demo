@@ -25,9 +25,6 @@ RSpec.describe Superform::Namespace do
     it "has key" do
       expect(form.key).to eql(:user)
     end
-    it "has value" do
-      expect(form.object).to eql(user)
-    end
     context "DOM" do
       let(:dom) { Superform::DOM.new(form) }
       it "has name" do
@@ -150,7 +147,7 @@ RSpec.describe Superform::Namespace do
     subject { form.to_h }
 
     before do
-      form.field(:name) do |name|
+      form.namespace(:name) do |name|
         name.field(:first, value: "Brad")
         name.field(:last)
       end
@@ -160,7 +157,7 @@ RSpec.describe Superform::Namespace do
         address.field(:id, permit: false)
         address.field(:street)
       end
-      form.collection(:modulo, value: 4.times) do |modulo|
+      form.collection(:modulo, object: 4.times) do |modulo|
         if (modulo.value % 2 == 0)
           modulo.field(:fizz, value: modulo.value)
         else

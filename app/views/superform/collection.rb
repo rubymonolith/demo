@@ -11,6 +11,8 @@ module Superform
       @schema = schema
       @block = block
       @builder = builder
+
+      self.assign object if object.any?
     end
 
     def each(&)
