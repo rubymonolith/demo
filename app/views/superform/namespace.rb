@@ -34,14 +34,14 @@ module Superform
 
     def field(key, permit: true, value: nil, &)
       return @children[key] if @children.key? key
-      # value ||= object_mapper.get(key)
+      value ||= object_mapper.get(key)
       @schema.permit(key, permit: permit)
 
       append_child @builder.field(key, parent: self, value: value, &)
     end
 
     def each(&)
-      @children.each(&)
+      @children.values.each(&)
     end
 
     def assign(object)
