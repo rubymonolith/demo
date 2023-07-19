@@ -1,11 +1,12 @@
 module Superform::Components
   class FieldComponent < ApplicationComponent
-    attr_reader :namespace, :dom
+    attr_reader :field, :dom
 
-    def initialize(namespace, attributes: {})
-      @namespace = namespace
+    delegate :dom, to: :field
+
+    def initialize(field, attributes: {})
+      @field = field
       @attributes = attributes
-      @dom = Superform::DOM.new(namespace)
     end
 
     def field_attributes
@@ -58,7 +59,7 @@ module Superform::Components
     end
 
     def type
-      case namespace.value
+      case field.value
       when URI
         "url"
       when Integer

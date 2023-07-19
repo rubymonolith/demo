@@ -7,18 +7,10 @@ module Superform
         :collection,
         :namespace,
         :key,
-        :schema,
         :assign,
         :serialize,
       to: :@namespace
 
-    # Extend Namespace to add components to render namespaces
-    Namespace = Class.new(Superform::Namespace)
-
-    # Extend Collection to add components to render collections.
-    Collection = Class.new(Superform::Collection)
-
-    # Extend Field to add components to render fields.
     class Field < Superform::Field
       def button(**attributes)
         Components::ButtonComponent.new(self, attributes: attributes)
@@ -41,8 +33,7 @@ module Superform
       @model = model
       @action = action
       @method = method
-      @builder = Builder.from self.class
-      @namespace = @builder.namespace(model.model_name.param_key, object: @model)
+      @namespace = Namespace.root(model.model_name.param_key, object: model, field_class: self.class::Field)
     end
 
     def around_template(&)

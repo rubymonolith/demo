@@ -14,9 +14,9 @@ module Resource
   end
 
   def create
-    @resource.assign_attributes params.require(resource_name).permit(unrendered_phlex_action(:new).forms.first.schema.keys)
+    unrendered_phlex_action(:new).forms.first.assign params.require(resource_name).permit!
 
-    if @resource.save
+    if @resource.save!
       redirect_to @resource
     else
       # Maybe I should just render it with a string? That way
@@ -28,7 +28,7 @@ module Resource
   end
 
   def update
-    @resource.assign_attributes params.require(resource_name).permit(unrendered_phlex_action(:edit).forms.first.schema.keys)
+    unrendered_phlex_action(:edit).forms.first.assign params.require(resource_name).permit!
 
     if @resource.save
       redirect_to @resource
@@ -65,10 +65,8 @@ module Resource
     end
   end
 
-  def form_params(action)
-    unrendered_phlex_action(action).forms.each_with_object ActionController::Parameters.new do |form, hash|
-      hash[form.key.to_sym] = form.assign(params.require(form.key)).to_h
-    end.permit!
+  def resource_forms(action)
+    unrendered_phlex_action(action).forms
   end
 
   def assign_resource_instance_variables

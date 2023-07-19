@@ -14,7 +14,7 @@ class ApplicationForm < Superform::Form
   end
 
   def labeled(component)
-    render component.namespace.label
+    render component.field.label
     render component
   end
 end
