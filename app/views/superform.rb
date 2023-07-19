@@ -14,10 +14,6 @@ module Superform
       lineage.map(&:key).join("_")
     end
 
-    def title
-      @field.key.to_s.titleize
-    end
-
     def name
       root, *names = keys
       names.map { |name| "[#{name}]" }.unshift(root).join
@@ -95,19 +91,14 @@ module Superform
     def self.root(*args, **kwargs, &block)
       new(*args, parent: nil, **kwargs, &block)
     end
-
     private
 
     def create_child(key, child_class, **options, &block)
       fetch(key) { child_class.new(key, parent: self, **options, &block) }
     end
 
-    def fetch(key, &default)
-      if @children.key? key
-        raise "#{key} already defined"
-      else
-        @children[key] = default.call
-      end
+    def fetch(key, &build)
+      @children[key] ||= build.call
     end
 
     def object_for(key:)
@@ -145,10 +136,38 @@ module Superform
 
     # Wraps a field that's an array of values with a bunch of fields
     # that are indexed with the array's index.
-    def collection
-      Array(value).each.with_index do |value, index|
-        yield self.class.new(index, parent: self, value: value)
+    def collection(&)
+      @collection ||= FieldCollection.new(field: self, &)
+    end
+  end
+
+  class FieldCollection
+    include Enumerable
+
+    def initialize(field:, &)
+      @field = field
+      @index = 0
+      each(&) if block_given?
+    end
+
+    def each(&)
+      values.each do |value|
+        yield build_field(value: value)
       end
+    end
+
+    def field
+      build_field
+    end
+
+    def values
+      Array(@field.value)
+    end
+
+    private
+
+    def build_field(**kwargs)
+      @field.class.new(@index += 1, parent: @field, **kwargs)
     end
   end
 

@@ -22,7 +22,7 @@ class Blogs::Batch::PostsController < ApplicationController
         render TableComponent.new(items: @selection.items) do |table|
           table.column do |column|
             column.item do |item|
-              render form.collection(:selected).field(value: item.id).input(type: :checkbox, checked: @selection.selected?(item.id))
+              render form.field(:selected).collection.field.input(type: :checkbox, checked: @selection.selected?(item.id), value: item.id)
             end
           end
           table.column("Title")         { show(_1, :title) }

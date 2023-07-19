@@ -27,6 +27,10 @@ module Superform
       def textarea(**attributes)
         Components::TextareaComponent.new(self, attributes: attributes)
       end
+
+      def title
+        key.to_s.titleize
+      end
     end
 
     def initialize(model, action: nil, method: nil)

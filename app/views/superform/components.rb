@@ -27,7 +27,7 @@ module Superform::Components
 
   class LabelComponent < FieldComponent
     def template(&)
-      label(**attributes) { dom.title }
+      label(**attributes) { dom.key.to_s.titleize }
     end
 
     def field_attributes
