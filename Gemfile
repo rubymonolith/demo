@@ -84,5 +84,11 @@ gem "rspec-rails", "~> 6.0"
 if litestack_path = ENV["LITESTACK_GEM_PATH"]
   gem "litestack", path: litestack_path
 else
-  gem "litestack", github: "bradgessler/litestack"
+  gem "litestack", github: "oldmoe/litestack"
+end
+
+if superform_path = ENV["SUPERFORM_GEM_PATH"]
+  gem "superform", path: superform_path
+else
+  gem "superform", github: "rubymonolith/superform"
 end
