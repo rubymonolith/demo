@@ -24,7 +24,7 @@ class PageLayout < ApplicationLayout
             "Component Driven Development"
           end
           plain " or view the "
-          link_to("https://github.com/rocketshipio/oxidizer-demo") { "source code on Github" }
+          link_to("https://github.com/rubymonolith/demo") { "source code on Github" }
           plain "."
         end
       end

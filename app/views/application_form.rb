@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class ApplicationForm < Superform::Form
-  class LabelField < Superform::Components::FieldComponent
+class ApplicationForm < Superform::Rails::Form
+  class LabelField < Superform::Rails::Components::FieldComponent
     def template
       label(**attributes) { strong { field.title } }
     end
