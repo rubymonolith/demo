@@ -92,3 +92,6 @@ if superform_path = ENV["SUPERFORM_GEM_PATH"]
 else
   gem "superform", github: "rubymonolith/superform"
 end
+
+gem "guard-zeitwerk", "~> 0.1.0", github: "rubymonolith/guard-zeitwerk", group: :development
+gem "zeitwerk", "~> 2.6", github: "fxn/zeitwerk"
