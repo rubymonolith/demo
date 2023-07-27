@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::Base
   include Assignable
-  include Phlexable
+  include Phlex::Rails::Actions
   include Resource
 
   layout false
