@@ -94,4 +94,4 @@ else
 end
 
 gem "guard-zeitwerk", "~> 0.1.0", github: "rubymonolith/guard-zeitwerk", group: :development
-gem "zeitwerk", "~> 2.6", github: "fxn/zeitwerk"
+gem "zeitwerk", "~> 2.6"
