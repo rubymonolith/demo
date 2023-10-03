@@ -3,11 +3,25 @@ class PostsController < ApplicationController
 
   class Form < ApplicationForm
     def template
+      labeled(field(:blog_id).select do |s|
+        Blog.all.each do |blog|
+          option(value: blog.id, selected: blog.id == s.field.value) { blog.title }
+        end
+        option(selected: s.field.value.nil?)
+      end)
       labeled field(:title).input.focus
       labeled field(:publish_at).input
       labeled field(:content).textarea(rows: 6)
 
       submit
+    end
+  end
+
+  class New < ApplicationView
+    def title = "New Post"
+
+    def template
+      render Form.new(Post.new)
     end
   end
 

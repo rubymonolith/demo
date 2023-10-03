@@ -81,17 +81,7 @@ gem "inputomatic", "~> 0.1.1"
 
 gem "rspec-rails", "~> 6.0"
 
-if litestack_path = ENV["LITESTACK_GEM_PATH"]
-  gem "litestack", path: litestack_path
-else
-  gem "litestack", github: "oldmoe/litestack"
-end
+gem "litestack", github: "oldmoe/litestack"
+gem "superform", github: "rubymonolith/superform", branch: "select-options"
 
-if superform_path = ENV["SUPERFORM_GEM_PATH"]
-  gem "superform", path: superform_path
-else
-  gem "superform", github: "rubymonolith/superform"
-end
-
-gem "guard-zeitwerk", "~> 0.1.0", github: "rubymonolith/guard-zeitwerk", group: :development
-gem "zeitwerk", "~> 2.6", github: "fxn/zeitwerk"
+gem "rouge", "~> 4.1"
