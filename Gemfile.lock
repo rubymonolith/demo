@@ -1,16 +1,4 @@
 GIT
-  remote: https://github.com/oldmoe/litestack.git
-  revision: 706a43a8bfc6a08711ab66c768e6d58094db4b08
-  specs:
-    litestack (0.3.0)
-      erubi
-      hanami-router
-      oj
-      rack
-      sqlite3
-      tilt
-
-GIT
   remote: https://github.com/rocketshipio/oxidizer.git
   revision: fe600852c4f47a1faf0d392476a71b0ee4fb0042
   specs:
@@ -152,6 +140,13 @@ GEM
     jbuilder (2.11.5)
       actionview (>= 5.0.0)
       activesupport (>= 5.0.0)
+    litestack (0.3.0)
+      erubi
+      hanami-router
+      oj
+      rack
+      sqlite3
+      tilt
     loofah (2.21.3)
       crass (~> 1.0.2)
       nokogiri (>= 1.12.0)
@@ -313,7 +308,7 @@ DEPENDENCIES
   importmap-rails
   inputomatic (~> 0.1.1)
   jbuilder
-  litestack!
+  litestack
   oxidizer (~> 0.1.0)!
   phlex-rails
   puma (~> 6.0)
