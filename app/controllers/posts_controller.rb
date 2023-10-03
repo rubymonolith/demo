@@ -4,10 +4,8 @@ class PostsController < ApplicationController
   class Form < ApplicationForm
     def template
       labeled(field(:blog_id).select do |s|
-        Blog.all.each do |blog|
-          option(value: blog.id, selected: blog.id == s.field.value) { blog.title }
-        end
-        option(selected: s.field.value.nil?)
+        s.options(Blog.pluck(:id, :title))
+        s.blank_option
       end)
       labeled field(:title).input.focus
       labeled field(:publish_at).input
