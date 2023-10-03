@@ -11,6 +11,16 @@ class ApplicationForm < Superform::Rails::Form
     def template(&options)
       select(**attributes, &options)
     end
+
+    def options(collection)
+      collection.each do |id, value|
+        option(value: id, selected: id == field.value) { value }
+      end
+    end
+
+    def blank_option
+      option(selected: field.value.nil?)
+    end
   end
 
 
