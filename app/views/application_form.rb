@@ -2,40 +2,27 @@
 
 class ApplicationForm < Superform::Rails::Form
   class LabelField < Superform::Rails::Components::LabelComponent
-    def template
-      label(**attributes) { strong { field.title } }
+    def template(&content)
+      content ||= Proc.new { field.title }
+      label(**attributes) { strong(&content) }
     end
   end
-
-  class SelectField < Superform::Rails::Components::FieldComponent
-    def template(&options)
-      select(**attributes, &options)
-    end
-
-    def options(collection)
-      collection.each do |id, value|
-        option(value: id, selected: id == field.value) { value }
-      end
-    end
-
-    def blank_option
-      option(selected: field.value.nil?)
-    end
-  end
-
 
   class Field < Field
     def label(**attributes)
       LabelField.new(self, attributes: attributes)
     end
-
-    def select(**attributes, &)
-      SelectField.new(self, attributes: attributes, &)
-    end
   end
 
-  def labeled(component)
+  # def field(name)
+  #   if reflection = @model.class.reflect_on_association(name)
+  #     name = reflection.foreign_key
+  #   end
+  #   super(name)
+  # end
+
+  def labeled(component, &)
     render component.field.label
-    render component
+    render component, &
   end
 end

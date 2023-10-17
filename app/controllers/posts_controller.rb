@@ -3,10 +3,12 @@ class PostsController < ApplicationController
 
   class Form < ApplicationForm
     def template
-      labeled(field(:blog_id).select do |s|
-        s.options(Blog.pluck(:id, :title))
-        s.blank_option
-      end)
+      labeled field(:blog).select(Blog.select(:id, :title), nil)
+      # labeled field(:blog).select do
+      #   _1.options(Blog.select(:id, :title))
+      #   _1.blank_option
+      # end
+
       labeled field(:title).input.focus
       labeled field(:publish_at).input
       labeled field(:content).textarea(rows: 6)
