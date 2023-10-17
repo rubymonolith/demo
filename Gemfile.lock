@@ -7,7 +7,7 @@ GIT
 
 GIT
   remote: https://github.com/rubymonolith/superform.git
-  revision: 105498a670835b2051640104ea12f05a1438212e
+  revision: 94f33ec973272590fb6203cecef33d639cc8e658
   branch: main
   specs:
     superform (0.4.0)
