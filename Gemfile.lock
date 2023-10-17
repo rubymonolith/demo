@@ -26,6 +26,14 @@ GIT
       phlex-rails (~> 1.0)
       zeitwerk (~> 2.6)
 
+GIT
+  remote: https://github.com/rubymonolith/superview.git
+  revision: 2b15ea80b650a03de9975de2fe157bc35cfa4c27
+  branch: main
+  specs:
+    superview (0.1.0)
+      phlex-rails (~> 1.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -318,6 +326,7 @@ DEPENDENCIES
   sqlite3 (~> 1.4)
   stimulus-rails
   superform!
+  superview!
   turbo-rails
   tzinfo-data
   web-console

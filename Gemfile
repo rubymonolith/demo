@@ -82,6 +82,7 @@ gem "inputomatic", "~> 0.1.1"
 gem "rspec-rails", "~> 6.0"
 
 gem "litestack", github: "oldmoe/litestack"
+gem "superview", github: "rubymonolith/superview", branch: "main"
 gem "superform", github: "rubymonolith/superform", branch: "main"
 
 gem "rouge", "~> 4.1"
