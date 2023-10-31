@@ -12,8 +12,9 @@ class ApplicationLayout < ApplicationComponent
 
     html do
       head do
-        # title(&@title)
         title { render @title }
+        # But really I want to render it like this...
+        # title(&@title)
         meta name: "viewport", content: "width=device-width,initial-scale=1"
         csp_meta_tag
         csrf_meta_tags

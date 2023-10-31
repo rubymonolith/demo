@@ -12,6 +12,11 @@ class PageLayout < ApplicationLayout
             h1 { render @title }
             h2 { render @subtitle }
           end
+          # But really I want to render it like this...
+          # hgroup do
+          #   h1(&@title)
+          #   h2(&@subtitle)
+          # end
         else
           h1 { @title }
         end
