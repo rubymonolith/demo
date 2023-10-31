@@ -9,8 +9,8 @@ class PageLayout < ApplicationLayout
       header(class: "container") do
         if @title and @subtitle
           hgroup do
-            h1(&@title)
-            h2(&@subtitle)
+            h1 { render @title }
+            h2 { render @subtitle }
           end
         else
           h1 { @title }

@@ -72,6 +72,7 @@ group :test do
 end
 
 gem "phlex-rails"
+gem "phlex", github: "phlex-ruby/phlex", branch: "render-strings"
 gem "oxidizer", "~> 0.1.0", github: "rocketshipio/oxidizer"
 
 # gem "oxidizer", path: "~/Projects/rocketshipio/oxidizer"

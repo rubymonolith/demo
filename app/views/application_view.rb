@@ -26,7 +26,7 @@ class ApplicationView < ApplicationComponent
   end
 
   def around_template(&)
-    render PageLayout.new(title: proc { title }, subtitle: proc { subtitle }) do
+    render PageLayout.new(title: -> { title }, subtitle: -> { subtitle }) do
       super(&)
     end
   end
