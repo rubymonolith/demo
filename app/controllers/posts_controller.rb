@@ -20,6 +20,7 @@ class PostsController < ApplicationController
 
   class Index < ApplicationView
     attr_writer :posts, :current_user
+
     turbo method: :morph do
       stream_from @posts, @current_user
     end
@@ -43,7 +44,7 @@ class PostsController < ApplicationController
 
   class View < ApplicationView
     turbo method: :morph do
-      stream_from @post, @current_user, @post
+      stream_from @post, @current_user
     end
   end
 

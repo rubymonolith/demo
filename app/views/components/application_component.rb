@@ -8,8 +8,11 @@ class ApplicationComponent < Phlex::HTML
   if Rails.env.development?
     def before_template
       comment { "Before #{self.class.name}" }
-      turbo if respond_to? :turbo
-      super
     end
+  end
+
+  def after_template
+    turbo if respond_to? :turbo
+    super
   end
 end
