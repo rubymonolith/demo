@@ -3,7 +3,7 @@ class PostsController < ApplicationController
 
   class Form < ApplicationForm
     def template
-      labeled field(:blog).select Blog.select(:id, :title), nil
+      labeled field(:blog_id).select Blog.select(:id, :title), nil
       # Same thing as above, but multiple lines. Useful for optgroups.
       # labeled field(:blog).select do
       #   _1.options(Blog.select(:id, :title))
@@ -18,16 +18,11 @@ class PostsController < ApplicationController
     end
   end
 
-  class New < ApplicationView
-    def title = "New Post"
-
-    def template
-      render Form.new(Post.new)
-    end
-  end
-
   class Index < ApplicationView
     attr_writer :posts, :current_user
+    turbo method: :morph do
+      stream_from @posts, @current_user
+    end
 
     def title = "#{@current_user.name}'s Posts"
 
@@ -46,7 +41,22 @@ class PostsController < ApplicationController
     end
   end
 
-  class Show < ApplicationView
+  class View < ApplicationView
+    turbo method: :morph do
+      stream_from @post, @current_user, @post&.blog
+    end
+  end
+
+  class New < View
+    attr_writer :post
+    def title = "New Post"
+
+    def template
+      render Form.new(Post.new)
+    end
+  end
+
+  class Show < View
     attr_writer :post
 
     def title = @post.title
@@ -78,7 +88,7 @@ class PostsController < ApplicationController
     end
   end
 
-  class Edit < ApplicationView
+  class Edit < View
     attr_writer :post
 
     def title = @post.title

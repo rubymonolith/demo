@@ -4,4 +4,6 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   validates :email, presence: true
+
+  broadcasts_refreshes
 end

@@ -17,6 +17,7 @@ class ApplicationView < ApplicationComponent
 
   def initialize(...)
     @forms = []
+    @turbo_meta_tags = self.class.turbo_meta_tags
     super(...)
   end
 
@@ -26,7 +27,7 @@ class ApplicationView < ApplicationComponent
   end
 
   def around_template(&)
-    render PageLayout.new(title: proc { title }, subtitle: proc { subtitle }) do
+    render PageLayout.new(title: proc { title }, subtitle: proc { subtitle }, turbo: @turbo_meta_tags) do
       super(&)
     end
   end

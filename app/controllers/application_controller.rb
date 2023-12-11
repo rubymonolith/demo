@@ -6,6 +6,6 @@ class ApplicationController < ActionController::Base
   layout false
 
   def current_user
-    @current_user ||= User.first
+    @current_user ||= User.find_or_create_by!(email: "somebody@example.com", name: "Somebody")
   end
 end

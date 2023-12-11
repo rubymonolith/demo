@@ -11,6 +11,9 @@ class BlogsController < ApplicationController
 
   class Show < ApplicationView
     attr_writer :blog, :current_user
+    turbo method: :morph do
+      stream_from @blog, @current_user, @blog.posts
+    end
 
     def title = @blog.title
     def subtitle
@@ -42,6 +45,10 @@ class BlogsController < ApplicationController
 
   class Index < ApplicationView
     attr_accessor :blogs, :current_user
+
+    turbo method: :morph do
+      stream_from @blog, @current_user
+    end
 
     def title = "Blogs"
     def subtitle = "Looks like #{helpers.pluralize @blogs.count, "blog"} have been created"

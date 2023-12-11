@@ -1,6 +1,6 @@
 class PageLayout < ApplicationLayout
-  def initialize(title: nil, subtitle: nil)
-    @title = title
+  def initialize(subtitle: nil, **kwargs)
+    super **kwargs
     @subtitle = subtitle
   end
 

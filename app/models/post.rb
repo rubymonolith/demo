@@ -1,10 +1,12 @@
 class Post < ApplicationRecord
-  belongs_to :user
-  belongs_to :blog
+  belongs_to :user, touch: true
+  belongs_to :blog, touch: true
 
   validates :title, presence: true
 
   attribute :publish_at, Inputomatic::DateTime.new
+
+  broadcasts_refreshes
 
   def status
     status = if publish_at.nil?

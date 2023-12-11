@@ -3,8 +3,9 @@
 class ApplicationLayout < ApplicationComponent
   include Phlex::Rails::Layout
 
-  def initialize(title:)
+  def initialize(title:, turbo:)
     @title = title
+    @turbo = turbo
   end
 
   def template(&)
@@ -18,6 +19,7 @@ class ApplicationLayout < ApplicationComponent
         csrf_meta_tags
         stylesheet_link_tag "application", data_turbo_track: "reload"
         javascript_importmap_tags
+        render @turbo
       end
 
       body(&)
