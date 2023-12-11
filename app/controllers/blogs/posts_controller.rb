@@ -4,7 +4,9 @@ class Blogs::PostsController < ApplicationController
 
   class New < ApplicationView
     attr_accessor :current_user, :blog, :post
-    def turbo = stream_from @blog, @blog.user
+    turbo method: :morph do
+      stream_from @blog, @blog.user
+    end
 
     def title = "Create a new post"
     def subtitle = show(@blog, :title)

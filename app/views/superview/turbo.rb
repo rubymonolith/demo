@@ -64,7 +64,7 @@ module Superview
       def turbo_stream_from(*streamables, **attributes)
         attributes[:channel] = attributes[:channel]&.to_s || "Turbo::StreamsChannel"
         attributes[:"signed-stream-name"] = ::Turbo::StreamsChannel.signed_stream_name(streamables)
-        turbo_cable_stream_source **attributes, class: "hidden"
+        turbo_cable_stream_source **attributes, class: "hidden", style: "display: none;"
       end
 
       def stream_from(*streamables)

@@ -17,6 +17,10 @@ class Blogs::Batch::PostsController < ApplicationController
       show(@blog, :title)
     end
 
+    turbo method: :morph, scroll: :preserve do
+      stream_from @blog, @current_user, @posts
+    end
+
     def template(&)
       render ApplicationForm.new(@selection, action: url_for) do |form|
         render TableComponent.new(items: @selection.items) do |table|
@@ -81,5 +85,12 @@ class Blogs::Batch::PostsController < ApplicationController
   def select_all
     @selection.select_all
     render phlex_action(:index), status: :created
+  end
+
+  private
+
+  after_action :broadcasts_refreshes, if: :routable_batch_action?
+  def broadcasts_refreshes
+    @selection.selected_items.each(&:touch)
   end
 end

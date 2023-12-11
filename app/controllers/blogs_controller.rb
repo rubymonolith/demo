@@ -47,7 +47,7 @@ class BlogsController < ApplicationController
     attr_accessor :blogs, :current_user
 
     turbo method: :morph do
-      stream_from @blog, @current_user
+      stream_from @current_user, @blogs
     end
 
     def title = "Blogs"
