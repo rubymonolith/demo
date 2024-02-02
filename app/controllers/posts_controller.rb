@@ -43,13 +43,14 @@ class PostsController < ApplicationController
   end
 
   class View < ApplicationView
+    attr_writer :post
+
     turbo method: :morph do
       stream_from @post, @current_user
     end
   end
 
   class New < View
-    attr_writer :post
     def title = "New Post"
 
     def template
@@ -58,8 +59,6 @@ class PostsController < ApplicationController
   end
 
   class Show < View
-    attr_writer :post
-
     def title = @post.title
     def subtitle = show(@post.blog, :title)
 
@@ -90,8 +89,6 @@ class PostsController < ApplicationController
   end
 
   class Edit < View
-    attr_writer :post
-
     def title = @post.title
     def subtitle = show(@post.blog, :title)
 
